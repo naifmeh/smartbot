@@ -2,7 +2,6 @@ import gym
 import itertools
 import matplotlib
 import numpy as np
-import pandas as pd
 import sys
 
 if "./gym-botenv/" not in sys.path:
@@ -12,7 +11,7 @@ from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
 from utils import plotting
 
-env = BotenvEnv(1000)
+env = BotenvEnv(3000)
 
 
 def make_epsilon_greedy_policy(Q, epsilon, nA):

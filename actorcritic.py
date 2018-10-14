@@ -12,7 +12,7 @@ if "./gym-botenv/" not in sys.path:
 from gym_botenv.envs.botenv_env import BotenvEnv
 from utils import plotting
 
-env = BotenvEnv(1000)
+env = BotenvEnv(7000)
 
 class PolicyEstimator():
 

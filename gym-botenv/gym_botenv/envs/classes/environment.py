@@ -35,16 +35,21 @@ class SecurityProvider:
 
     def should_block_bot(self, bot: Bot):
         lowest_prob = 0.8
-        highest_prob = 1
+        highest_prob = 0.99
         lowest_grade = 1
         highest_grade = 10
-        formula = lambda x: ((x-lowest_grade)/(highest_grade - lowest_grade))*(highest_prob - lowest_prob) + lowest_prob
+        formula = lambda x: ((x-lowest_grade)*(highest_prob - lowest_prob))/(highest_grade - lowest_grade) + lowest_prob
 
         prob = np.ones(2, dtype=float) * formula(self.grade)
-        prob[1] = 1 - prob[1]
-        if (bot.ua in self.list_uas.keys()) and (self.list_uas[bot.ua] > (25-self.grade)):
+        if prob[1] <= 1:
+            prob[1] = 1 - prob[1]
+        else:
+            prob[0] = 1 # TODO wtf
+            prob[1] = 0
+
+        if (bot.ua in self.list_uas.keys()) and (self.list_uas[bot.ua] > (30-self.grade)):
             return np.random.choice([True, False], p=prob)
-        if(bot.ip in self.list_ips.keys()) and(self.list_ips[bot.ip] > (25-self.grade)):
+        if(bot.ip in self.list_ips.keys()) and(self.list_ips[bot.ip] > (30-self.grade)):
             return np.random.choice([True, False], p=prob)
 
         return False
