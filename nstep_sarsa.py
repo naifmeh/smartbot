@@ -9,7 +9,7 @@ from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
 from utils import plotting
 
-env = BotenvEnv(5000)
+env = BotenvEnv(1000)
 
 def make_epsilon_greedy_policy(Q, epsilon, nA):
 
@@ -91,5 +91,5 @@ def nstep_sarsa(env, num_episodes, discount_factor=0.7, alpha=0.5, epsilon=0.1, 
     return Q, stats
 
 if __name__ == '__main__':
-    Q, stats = nstep_sarsa(env, 500)
+    Q, stats = nstep_sarsa(env, 300)
     plotting.plot_episode_stats(stats)

@@ -66,7 +66,7 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
 
 
 if __name__ == '__main__':
-    Q, stats = q_learning(env, 1500)
+    Q, stats = q_learning(env, 500)
     plotting.plot_episode_stats(stats)
 
 
