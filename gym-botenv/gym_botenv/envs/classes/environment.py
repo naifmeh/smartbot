@@ -17,9 +17,12 @@ class SecurityProvider:
         self.list_uas = {}
 
     def increment_counter(self):
+        if(self.id == 0):
+            print("Updated SP with value 0")
         self.counter_visited += 1
 
     def update_bot_visit(self, bot: Bot):
+
         if bot.ua in self.list_uas.keys():
             self.list_uas[bot.ua] += 1
         else:
@@ -48,10 +51,15 @@ class SecurityProvider:
             prob[1] = 0
 
         if (bot.ua in self.list_uas.keys()) and (self.list_uas[bot.ua] > (30-self.grade)):
-            return np.random.choice([True, False], p=prob)
+            block = np.random.choice([True, False], p=prob)
+            if block:
+                self.list_uas[bot.ua] = 0
+            return block
         if(bot.ip in self.list_ips.keys()) and(self.list_ips[bot.ip] > (30-self.grade)):
-            return np.random.choice([True, False], p=prob)
-
+            block = np.random.choice([True, False], p=prob)
+            if block:
+                self.list_ips[bot.ip] = 0
+            return block
         return False
 
 

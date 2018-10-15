@@ -7,7 +7,7 @@ import pandas as pd
 EpisodeStats = namedtuple("Stats", ["episode_lengths", "episode_rewards"])
 
 
-def plot_episode_stats(stats, smoothing_window=10, noshow=False):
+def plot_episode_stats(stats, smoothing_window=10, noshow=False, title="None"):
 
     # Plot the episode reward over time
     fig = plt.figure(figsize=(10,5))
@@ -15,10 +15,15 @@ def plot_episode_stats(stats, smoothing_window=10, noshow=False):
     plt.plot(rewards_smoothed)
     plt.xlabel("Episode")
     plt.ylabel("Episode Reward (Smoothed)")
-    plt.title("Episode Reward over Time (Smoothed over window size {})".format(smoothing_window))
+    if title != "None":
+        plt.title(title)
+    else:
+        plt.title("Episode Reward over Time (Smoothed over window size {})".format(smoothing_window))
     if noshow:
         plt.close(fig)
     else:
         plt.show(fig)
 
     return fig
+
+# Todo :  plot other stuffs

@@ -12,7 +12,7 @@ if "./gym-botenv/" not in sys.path:
 from gym_botenv.envs.botenv_env import BotenvEnv
 from utils import plotting
 
-env = BotenvEnv(7000)
+env = BotenvEnv(1000)
 
 class PolicyEstimator():
 
@@ -107,6 +107,7 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
             action_probs = estimator_policy.predict(states_map[state])
             action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
             next_state, reward, done, _ = env.step(action)
+            #env.render(mode='blocked')
 
             episode.append(Transition(
                 state=state, action=action, reward=reward, next_state=next_state, done=done
@@ -153,6 +154,6 @@ if __name__== '__main__':
         sess.run(tf.initialize_all_variables())
         # Note, due to randomness in the policy the number of episodes you need to learn a good
         # policy may vary.
-        stats = actor_critic(env, policy_estimator, value_estimator, 200)
+        stats = actor_critic(env, policy_estimator, value_estimator, 100)
 
-    plotting.plot_episode_stats(stats, smoothing_window=10)
+    plotting.plot_episode_stats(stats, smoothing_window=10, title="Actor Critic")

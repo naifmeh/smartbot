@@ -21,7 +21,7 @@ def make_epsilon_greedy_policy(Q, epsilon, nA):
     return policy_fn
 
 
-def nstep_sarsa(env, num_episodes, discount_factor=0.7, alpha=0.5, epsilon=0.1, n=10):
+def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, n=5):
 
     Q = defaultdict(lambda: np.zeros(env.nA))
 
@@ -91,5 +91,5 @@ def nstep_sarsa(env, num_episodes, discount_factor=0.7, alpha=0.5, epsilon=0.1, 
     return Q, stats
 
 if __name__ == '__main__':
-    Q, stats = nstep_sarsa(env, 300)
+    Q, stats = nstep_sarsa(env, 500)
     plotting.plot_episode_stats(stats)

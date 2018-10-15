@@ -44,6 +44,7 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
             action_probs = policy(state)
             action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
             next_state, reward, done, _ = env.step(action)
+            #env.render()
 
             stats.episode_rewards[i_episode] += reward
             stats.episode_lengths[i_episode] = t
@@ -67,7 +68,7 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
 
 if __name__ == '__main__':
     Q, stats = q_learning(env, 500)
-    plotting.plot_episode_stats(stats)
+    plotting.plot_episode_stats(stats, title="QLearning")
 
 
 

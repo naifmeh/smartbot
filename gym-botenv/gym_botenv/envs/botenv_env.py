@@ -13,13 +13,12 @@ from .classes.bot import Bot
 def generate_security_providers(nSP: int, limits: tuple):
     """
     """
-    list_security_providers = {}
-    for i in range(nSP):
+    list_security_providers = {0: None}
+    for i in range(1, nSP+1):
         grade = random.randint(limits[0], limits[1] + 1)
         list_security_providers[i] = SecurityProvider(i, grade)
 
     return list_security_providers
-
 
 def generate_fake_sites(nSites: int, security_providers: dict, probSP: float, probFP: float, probBB: float):
     """
@@ -270,33 +269,35 @@ class BotenvEnv(gym.Env):
         """
         if len(self.states_map[state]) < 1:
             self.website = 0
-            return -0.5
+            return -0.1
         website = self.states_map[state][0]
         website.amount_page_visited += 1
         self.website = website
 
         upgrade_state_list(website, state, self.states_map, self.security_providers)
 
-        secu_provider = self.security_providers[website.security_provider]
-        secu_provider.update_bot_visit(bot)
-        self.security_providers[website.security_provider] = secu_provider
-        block_bot = secu_provider.should_block_bot(bot)
-        if block_bot:
-            return -10
+        if website.security_provider > 0:
+            secu_provider = self.security_providers[website.security_provider]
+            secu_provider.increment_counter()
+            secu_provider.update_bot_visit(bot)
+            self.security_providers[website.security_provider] = secu_provider
+            block_bot = secu_provider.should_block_bot(bot)
+            if block_bot:
+                return -10
 
         values = normalized_websites_values(self.sites, self.security_providers)
         block_bot = is_bot_blocked(website, values)
         if block_bot:
             return -5
 
-        return 10
+        return 5
 
     def get_state_map(self):
         return { x:i for i, x in enumerate(self.states)}
 
     def reset(self, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
-        # self.security_providers = generate_security_providers(nSP, (1, 10))
-        # self.sites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb)
+        self.security_providers = generate_security_providers(nSP, (1, 10))
+        self.sites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb)
         self.bot = initiate_bot()
 
         self.state = self.states[0]
