@@ -38,6 +38,10 @@ def sarsa_lambda(env, num_episodes, discount=0.9, alpha=0.01, trace_decay=0.9, e
         episode_rewards=np.zeros(num_episodes)
     )
 
+    botstats = plotting.BotStats(
+        blocked=np.zeros(num_episodes),
+        not_blocked=np.zeros(num_episodes)
+    )
     rewards = [0.]
 
     for i_episode in range(num_episodes):
@@ -59,6 +63,10 @@ def sarsa_lambda(env, num_episodes, discount=0.9, alpha=0.01, trace_decay=0.9, e
             delta = reward + discount*Q[next_state][next_action] - Q[state][action]
 
             stats.episode_rewards[i_episode] += reward
+            if reward <= -1:
+                botstats.blocked[i_episode] += 1
+            elif reward >= 5:
+                botstats.not_blocked[i_episode] += 1
 
             E[state][action] += 1
 
@@ -78,16 +86,17 @@ def sarsa_lambda(env, num_episodes, discount=0.9, alpha=0.01, trace_decay=0.9, e
             state = next_state
             action = next_action
     title = "Sarsa lambda with {} discount, {} step size, {} trace decay and {} epsilon".format(discount, alpha, trace_decay, epsilon)
-    return Q, stats, title
+    return Q, stats,botstats, title
 
 
 if __name__ == '__main__':
     start = time.time()
-    Q, stats, title = sarsa_lambda(env, 150)
+    Q, stats, botstats, title = sarsa_lambda(env, 150)
     print(stats)
     end = time.time()
     print("Algorithm took {} to execute".format(end-start))
     plotting.plot_episode_stats(stats, title=title)
+    plotting.plot_bot_stats(botstats)
 
 
 
