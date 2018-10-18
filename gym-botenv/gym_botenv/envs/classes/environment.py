@@ -47,8 +47,7 @@ class SecurityProvider:
         if prob[1] <= 1:
             prob[1] = 1 - prob[1]
         else:
-            prob[0] = 1 # TODO wtf
-            prob[1] = 0
+            prob = [1, 0]
 
         if (bot.ua in self.list_uas.keys()) and (self.list_uas[bot.ua] > (30-self.grade)):
             block = np.random.choice([True, False], p=prob)

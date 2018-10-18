@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d660d22-0a10-4101-944e-ecadc445f28d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/sarsalambda.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/actorcritic.py" beforeDir="false" afterPath="$PROJECT_DIR$/actorcritic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/botenv_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/botenv_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/bot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/data/ips" beforeDir="false" afterPath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/data/ips" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/data/uas" beforeDir="false" afterPath="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/data/uas" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nstep_sarsa.py" beforeDir="false" afterPath="$PROJECT_DIR$/nstep_sarsa.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/problem.md" beforeDir="false" afterPath="$PROJECT_DIR$/problem.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qlearning.py" beforeDir="false" afterPath="$PROJECT_DIR$/qlearning.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sarsa.py" beforeDir="false" afterPath="$PROJECT_DIR$/sarsa.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/plotting.py" afterDir="false" />
@@ -25,41 +29,48 @@
           <entry key="project.closed" value="4" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.19" value="1" />
-          <entry key="project.open.time.22" value="1" />
+          <entry key="project.open.time.22" value="2" />
           <entry key="project.open.time.24" value="1" />
           <entry key="project.open.time.26" value="1" />
           <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.30" value="1" />
+          <entry key="project.open.time.32" value="1" />
+          <entry key="project.open.time.35" value="1" />
           <entry key="project.open.time.4" value="1" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="8" />
+          <entry key="project.opened" value="12" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="ips" value="29" />
-          <entry key="py" value="28" />
-          <entry key="uas" value="7" />
+          <entry key="ips" value="34" />
+          <entry key="md" value="2" />
+          <entry key="py" value="38" />
+          <entry key="uas" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="PLAIN_TEXT" value="36" />
-          <entry key="Python" value="28" />
+          <entry key="Markdown" value="2" />
+          <entry key="PLAIN_TEXT" value="43" />
+          <entry key="Python" value="38" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="8" />
           <entry key="ips" value="2" />
-          <entry key="py" value="8145" />
+          <entry key="md" value="206" />
+          <entry key="py" value="11767" />
           <entry key="txt" value="139" />
           <entry key="uas" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
+          <entry key="Markdown" value="206" />
           <entry key="PLAIN_TEXT" value="150" />
-          <entry key="Python" value="8145" />
+          <entry key="Python" value="11767" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -68,10 +79,33 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/botenv_env.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="477">
+              <caret line="293" lean-forward="true" selection-start-line="293" selection-end-line="293" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+                <marker date="1539814899929" expanded="true" signature="11021:11084" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/documentation.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor />
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/environment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="615">
-              <caret line="59" column="20" lean-forward="true" selection-start-line="59" selection-start-column="20" selection-end-line="59" selection-end-column="20" />
+            <state relative-caret-position="-30">
+              <caret line="40" column="27" lean-forward="true" selection-start-line="40" selection-start-column="27" selection-end-line="40" selection-end-column="27" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -80,46 +114,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/botenv_env.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-105">
-              <caret line="155" lean-forward="true" selection-start-line="155" selection-end-line="155" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-                <marker date="1539641439424" expanded="true" signature="11020:11083" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/utils/plotting.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="18" column="24" lean-forward="true" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sarsa.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="571">
-              <caret line="70" column="28" selection-start-line="70" selection-start-column="28" selection-end-line="70" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-                <marker date="1539639899474" expanded="true" signature="335:341" ph="..." />
-                <marker date="1539639899474" expanded="true" signature="625:630" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/qlearning.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="496">
-              <caret line="69" column="32" selection-start-line="69" selection-start-column="32" selection-end-line="69" selection-end-column="32" />
+            <state relative-caret-position="480">
+              <caret line="59" column="52" lean-forward="true" selection-start-line="56" selection-start-column="11" selection-end-line="59" selection-end-column="52" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -128,10 +126,23 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/randompolicy.py">
+        <entry file="file://$PROJECT_DIR$/sarsalambda.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="26" column="22" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+            <state relative-caret-position="312">
+              <caret line="39" selection-start-line="39" selection-end-line="39" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+                <marker date="1539869780103" expanded="true" signature="744:2696" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/data/uas">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="750">
+              <caret line="50" selection-start-line="50" selection-end-line="50" />
             </state>
           </provider>
         </entry>
@@ -139,19 +150,46 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/actorcritic.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="586">
-              <caret line="158" column="58" selection-start-line="158" selection-start-column="58" selection-end-line="158" selection-end-column="58" />
+            <state relative-caret-position="282">
+              <caret line="121" column="48" lean-forward="true" selection-start-line="121" selection-start-column="48" selection-end-line="126" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/utils/plotting.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="492">
+              <caret line="41" column="58" lean-forward="true" selection-start-line="41" selection-start-column="58" selection-end-line="41" selection-end-column="58" />
+              <folding>
+                <element signature="e#0#17#0" expanded="true" />
+                <marker date="1539870427925" expanded="true" signature="939:1434" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nstep_sarsa.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="571">
-              <caret line="93" column="33" selection-start-line="93" selection-start-column="33" selection-end-line="93" selection-end-column="33" />
+            <state relative-caret-position="507">
+              <caret line="104" column="36" selection-start-line="104" selection-start-column="36" selection-end-line="104" selection-end-column="36" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sarsa.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="644">
+              <caret line="58" column="48" lean-forward="true" selection-start-line="58" selection-start-column="48" selection-end-line="58" selection-end-column="48" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+                <marker date="1539707519341" expanded="true" signature="335:341" ph="..." />
+                <marker date="1539707519341" expanded="true" signature="625:630" ph="..." />
               </folding>
             </state>
           </provider>
@@ -194,21 +232,24 @@
         <option value="$PROJECT_DIR$/randompolicy.py" />
         <option value="$PROJECT_DIR$/semi_gradient_nstep_sarsa.py" />
         <option value="$PROJECT_DIR$/RL/reinforcement-learning/DQN/dqn.py" />
-        <option value="$PROJECT_DIR$/utils/plotting.py" />
-        <option value="$PROJECT_DIR$/qlearning.py" />
         <option value="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/environment.py" />
         <option value="$PROJECT_DIR$/sarsa.py" />
+        <option value="$PROJECT_DIR$/problem.md" />
         <option value="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/botenv_env.py" />
+        <option value="$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/bot.py" />
+        <option value="$PROJECT_DIR$/qlearning.py" />
         <option value="$PROJECT_DIR$/actorcritic.py" />
+        <option value="$PROJECT_DIR$/sarsalambda.py" />
         <option value="$PROJECT_DIR$/nstep_sarsa.py" />
+        <option value="$PROJECT_DIR$/utils/plotting.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="991" />
-    <option name="y" value="24" />
-    <option name="width" value="929" />
-    <option name="height" value="1056" />
+    <option name="x" value="104" />
+    <option name="y" value="31" />
+    <option name="width" value="1317" />
+    <option name="height" value="548" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -218,7 +259,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -269,6 +309,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -287,7 +328,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.actorcritic">
+  <component name="RunManager" selected="Python.nstep_sarsa">
     <configuration name="actorcritic" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="PFE" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -351,27 +392,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="randompolicy" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="PFE" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/randompolicy.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="sarsa" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="PFE" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -393,20 +413,41 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="sarsalambda" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="PFE" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sarsalambda.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.qlearning" />
       <item itemvalue="Python.actorcritic" />
       <item itemvalue="Python.sarsa" />
-      <item itemvalue="Python.randompolicy" />
       <item itemvalue="Python.nstep_sarsa" />
+      <item itemvalue="Python.sarsalambda" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.actorcritic" />
         <item itemvalue="Python.nstep_sarsa" />
         <item itemvalue="Python.qlearning" />
+        <item itemvalue="Python.actorcritic" />
+        <item itemvalue="Python.sarsalambda" />
         <item itemvalue="Python.sarsa" />
-        <item itemvalue="Python.randompolicy" />
       </list>
     </recent_temporary>
   </component>
@@ -502,15 +543,16 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="62" y="-11" width="1859" height="1092" extended-state="6" />
+    <frame x="63" y="-4" width="1857" height="1084" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11504907" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1995638" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49945474" visible="true" weight="0.23849373" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49945474" visible="true" weight="0.3211297" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39958158" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -576,17 +618,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/data/uas">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/randompolicy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="26" column="22" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+    <entry file="file://$PROJECT_DIR$/problem.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="602">
+            <caret line="89" column="97" lean-forward="true" selection-start-line="89" selection-start-column="97" selection-end-line="89" selection-end-column="97" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
@@ -597,77 +635,114 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/plotting.py">
+    <entry file="file://$PROJECT_DIR$/randompolicy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="18" column="24" lean-forward="true" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+        <state relative-caret-position="345">
+          <caret line="26" column="22" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/bot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="270">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/classes/environment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="59" column="20" lean-forward="true" selection-start-line="59" selection-start-column="20" selection-end-line="59" selection-end-column="20" />
+        <state relative-caret-position="-30">
+          <caret line="40" column="27" lean-forward="true" selection-start-line="40" selection-start-column="27" selection-end-line="40" selection-end-column="27" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sarsa.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="571">
-          <caret line="70" column="28" selection-start-line="70" selection-start-column="28" selection-end-line="70" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-            <marker date="1539639899474" expanded="true" signature="335:341" ph="..." />
-            <marker date="1539639899474" expanded="true" signature="625:630" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/qlearning.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="496">
-          <caret line="69" column="32" selection-start-line="69" selection-start-column="32" selection-end-line="69" selection-end-column="32" />
+        <state relative-caret-position="480">
+          <caret line="59" column="52" lean-forward="true" selection-start-line="56" selection-start-column="11" selection-end-line="59" selection-end-column="52" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/botenv_env.py">
+    <entry file="file://$PROJECT_DIR$/sarsa.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-105">
-          <caret line="155" lean-forward="true" selection-start-line="155" selection-end-line="155" />
+        <state relative-caret-position="644">
+          <caret line="58" column="48" lean-forward="true" selection-start-line="58" selection-start-column="48" selection-end-line="58" selection-end-column="48" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
-            <marker date="1539641439424" expanded="true" signature="11020:11083" ph="..." />
+            <marker date="1539707519341" expanded="true" signature="335:341" ph="..." />
+            <marker date="1539707519341" expanded="true" signature="625:630" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sarsalambda.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <marker date="1539869780103" expanded="true" signature="744:2696" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/actorcritic.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="586">
-          <caret line="158" column="58" selection-start-line="158" selection-start-column="58" selection-end-line="158" selection-end-column="58" />
+        <state relative-caret-position="282">
+          <caret line="121" column="48" lean-forward="true" selection-start-line="121" selection-start-column="48" selection-end-line="126" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/plotting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="492">
+          <caret line="41" column="58" lean-forward="true" selection-start-line="41" selection-start-column="58" selection-end-line="41" selection-end-column="58" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
+            <marker date="1539870427925" expanded="true" signature="939:1434" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/nstep_sarsa.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="571">
-          <caret line="93" column="33" selection-start-line="93" selection-start-column="33" selection-end-line="93" selection-end-column="33" />
+        <state relative-caret-position="507">
+          <caret line="104" column="36" selection-start-line="104" selection-start-column="36" selection-end-line="104" selection-end-column="36" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/botenv_env.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="477">
+          <caret line="293" lean-forward="true" selection-start-line="293" selection-end-line="293" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <marker date="1539814899929" expanded="true" signature="11021:11084" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/documentation.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gym-botenv/gym_botenv/envs/data/uas">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="750">
+          <caret line="50" selection-start-line="50" selection-end-line="50" />
         </state>
       </provider>
     </entry>

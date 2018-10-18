@@ -84,4 +84,13 @@ Permet de determiner la policy.
 
 * Semi-gradient TD(y)
 
+## Update
 
+What about a double RL program ?
+RL choice which states would simply be pick website, pick action or etc, then if we pick website, all new kind of actions for
+different states
+
+## Update 2
+
+Représenter les etats par la config du bot
+Claquer un reward pour un certain objectif atteint

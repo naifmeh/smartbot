@@ -68,5 +68,5 @@ def sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
     return Q, stats
 
 if __name__ == '__main__':
-    Q, stats = sarsa(env, 1000)
+    Q, stats = sarsa(env, 500)
     plotting.plot_episode_stats(stats, title="Sarsa")

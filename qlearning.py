@@ -32,6 +32,11 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
         episode_rewards=np.zeros(num_episodes)
     )
 
+    botstats = plotting.BotStats(
+        blocked=np.zeros(num_episodes),
+        not_blocked=np.zeros(num_episodes)
+    )
+
 
     policy = make_epsilon_greedy_policy(Q, epsilon, env.nA)
 
@@ -49,6 +54,11 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
             stats.episode_rewards[i_episode] += reward
             stats.episode_lengths[i_episode] = t
 
+            if reward <= -1:
+                botstats.blocked[i_episode] += 1
+            elif reward >= 5:
+                botstats.not_blocked[i_episode] += 1
+
             # TD update
             best_next_action = np.argmax(Q[next_state])
             td_target = reward + discount_factor * Q[next_state][best_next_action]
@@ -63,13 +73,13 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
             print("\rEpisode {}/{}. ({})".format(i_episode + 1, num_episodes, reward), end="")
             sys.stdout.flush()
 
-    return Q, stats
+    return Q, stats, botstats
 
 
 if __name__ == '__main__':
-    Q, stats = q_learning(env, 500)
+    Q, stats, botstats = q_learning(env, 10)
     plotting.plot_episode_stats(stats, title="QLearning")
-
+    plotting.plot_bot_stats(botstats)
 
 
 

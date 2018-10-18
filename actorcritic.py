@@ -92,6 +92,10 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
         episode_rewards=np.zeros(num_episodes),
         episode_lengths=np.zeros(num_episodes)
     )
+    botstats = plotting.BotStats(
+        blocked=np.zeros(num_episodes),
+        not_blocked=np.zeros(num_episodes)
+    )
 
     Transition = collections.namedtuple("Transition", ["state", "action", "reward", "next_state", "done"])
     states_map = env.get_state_map()
@@ -116,6 +120,10 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
             # Update statistics
             stats.episode_rewards[i_episode] += reward
             stats.episode_lengths[i_episode] = t
+            if reward <= -1:
+                botstats.blocked[i_episode] += 1
+            elif reward >= 5:
+                botstats.not_blocked[i_episode] += 1
 
             # Calculate TD Target
             value_next = estimator_value.predict(states_map[next_state])
@@ -139,7 +147,7 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
 
             state = next_state
 
-    return stats
+    return stats, botstats
 
 
 if __name__== '__main__':
@@ -154,6 +162,7 @@ if __name__== '__main__':
         sess.run(tf.initialize_all_variables())
         # Note, due to randomness in the policy the number of episodes you need to learn a good
         # policy may vary.
-        stats = actor_critic(env, policy_estimator, value_estimator, 100)
+        stats, botstats = actor_critic(env, policy_estimator, value_estimator, 100)
 
-    plotting.plot_episode_stats(stats, smoothing_window=10, title="Actor Critic")
+    plotting.plot_episode_stats(stats, smoothing_window=2, title="Actor Critic")
+    plotting.plot_bot_stats(botstats)

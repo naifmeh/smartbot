@@ -83,7 +83,7 @@ def generate_states(num_binary_params: int, params_pages: tuple, params_secu_pro
     list_states_features.append(list_range_page_secu_provider)
 
     states_tuple = list(itertools.product(*list_states_features))
-    random.shuffle(states_tuple)
+    #random.shuffle(states_tuple)
     states = []
     for state in states_tuple:
         states.append(State(state))
@@ -293,7 +293,7 @@ class BotenvEnv(gym.Env):
         return 5
 
     def get_state_map(self):
-        return { x:i for i, x in enumerate(self.states)}
+        return {x: i for i, x in enumerate(self.states)}
 
     def reset(self, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
         self.security_providers = generate_security_providers(nSP, (1, 10))

@@ -32,6 +32,11 @@ def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, 
         episode_rewards=np.zeros(num_episodes)
     )
 
+    botstats = plotting.BotStats(
+        blocked=np.zeros(num_episodes),
+        not_blocked=np.zeros(num_episodes)
+    )
+
     policy = make_epsilon_greedy_policy(Q, epsilon, env.nA)
     list_returns = [0]
 
@@ -58,6 +63,10 @@ def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, 
                 states.append(next_state)
                 rewards.append(reward)
                 stats.episode_rewards[i_episode] += reward
+                if reward <= -1:
+                    botstats.blocked[i_episode] += 1
+                elif reward >= 5:
+                    botstats.not_blocked[i_episode] += 1
 
                 if done:
                     n_steps = t+1
@@ -70,7 +79,7 @@ def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, 
             if pi >= 0:
                 returns = 0.
 
-                for x in range(pi+1, min(pi+n, n_steps) +1):
+                for x in range(pi+1, min(pi+n, n_steps) + 1):
                     returns += pow(discount_factor, x-pi-1) * rewards[x]
 
                 if pi + n < n_steps:
@@ -88,8 +97,9 @@ def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, 
             state = next_state
             action = next_action
 
-    return Q, stats
+    return Q, stats, botstats
 
 if __name__ == '__main__':
-    Q, stats = nstep_sarsa(env, 500)
-    plotting.plot_episode_stats(stats)
+    Q, stats, botstats = nstep_sarsa(env, 100)
+    plotting.plot_episode_stats(stats, title="N-Step sarsa")
+    plotting.plot_bot_stats(botstats)
