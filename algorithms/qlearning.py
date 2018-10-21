@@ -1,14 +1,13 @@
-import gym
 import itertools
 import numpy as np
 import sys
 
-if "./gym-botenv/" not in sys.path:
-    sys.path.append("./gym-botenv/")
+if "../gym-botenv/" not in sys.path:
+    sys.path.append("../gym-botenv/")
 
 from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
-from utils import plotting
+from algorithms.utils import plotting
 
 env = BotenvEnv(1000)
 
@@ -77,7 +76,7 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
 
 
 if __name__ == '__main__':
-    Q, stats, botstats = q_learning(env, 10)
+    Q, stats, botstats = q_learning(env, 250)
     plotting.plot_episode_stats(stats, title="QLearning")
     plotting.plot_bot_stats(botstats)
 

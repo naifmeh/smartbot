@@ -1,17 +1,14 @@
-import gym
 import itertools
-from collections import defaultdict
 import numpy as np
 import sys
 import time
-from multiprocessing.pool import ThreadPool as Pool
 
-if "./gym-botenv/" not in sys.path:
-    sys.path.append("./gym-botenv/")
+if "../gym-botenv/" not in sys.path:
+    sys.path.append("../gym-botenv/")
 
 from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
-from utils import plotting
+from algorithms.utils import plotting
 
 
 env = BotenvEnv(1000)

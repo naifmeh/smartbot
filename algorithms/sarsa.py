@@ -1,15 +1,13 @@
-import gym
 import itertools
-import matplotlib
 import numpy as np
 import sys
 
-if "./gym-botenv/" not in sys.path:
-    sys.path.append("./gym-botenv/")
+if "../gym-botenv/" not in sys.path:
+    sys.path.append("../gym-botenv/")
 
 from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
-from utils import plotting
+from algorithms.utils import plotting
 
 env = BotenvEnv(1000)
 
@@ -30,6 +28,10 @@ def sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
     stats = plotting.EpisodeStats(
         episode_lengths=np.zeros(num_episodes),
         episode_rewards=np.zeros(num_episodes)
+    )
+    botstats = plotting.BotStats(
+        blocked=np.zeros(num_episodes),
+        not_blocked=np.zeros(num_episodes)
     )
 
     policy = make_epsilon_greedy_policy(Q, epsilon, env.nA)
@@ -52,6 +54,10 @@ def sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
             next_action = np.random.choice(np.arange(len(next_action_probs)), p=next_action_probs)
 
             stats.episode_rewards[i_episode] += reward
+            if reward <= -1:
+                botstats.blocked[i_episode] += 1
+            elif reward >= 5:
+                botstats.not_blocked[i_episode] += 1
 
             # TD Update
             td_target = reward + discount_factor * Q[next_state][next_action]
@@ -65,8 +71,9 @@ def sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
             state = next_state
 
 
-    return Q, stats
+    return Q, stats, botstats
 
 if __name__ == '__main__':
-    Q, stats = sarsa(env, 500)
+    Q, stats, botstats = sarsa(env, 250)
     plotting.plot_episode_stats(stats, title="Sarsa")
+    plotting.plot_bot_stats(botstats)

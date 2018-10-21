@@ -1,16 +1,14 @@
-import gym
 import itertools
-import matplotlib
 import numpy as np
 import sys
 import tensorflow as tf
 import collections
 
-if "./gym-botenv/" not in sys.path:
-    sys.path.append("./gym-botenv/")
+if "../gym-botenv/" not in sys.path:
+    sys.path.append("../gym-botenv/")
 
 from gym_botenv.envs.botenv_env import BotenvEnv
-from utils import plotting
+from algorithms.utils import plotting
 
 env = BotenvEnv(1000)
 
@@ -164,5 +162,5 @@ if __name__== '__main__':
         # policy may vary.
         stats, botstats = actor_critic(env, policy_estimator, value_estimator, 100)
 
-    plotting.plot_episode_stats(stats, smoothing_window=2, title="Actor Critic")
+    plotting.plot_episode_stats(stats, smoothing_window=1, title="Actor Critic")
     plotting.plot_bot_stats(botstats)

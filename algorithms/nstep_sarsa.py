@@ -2,12 +2,12 @@ import itertools
 import numpy as np
 import sys
 
-if "./gym-botenv/" not in sys.path:
-    sys.path.append("./gym-botenv/")
+if "../gym-botenv/" not in sys.path:
+    sys.path.append("../gym-botenv/")
 
 from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
-from utils import plotting
+from algorithms.utils import plotting
 
 env = BotenvEnv(1000)
 
@@ -87,9 +87,7 @@ def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, 
 
                 Q[states[pi]][actions[pi]] += alpha * (returns - Q[states[pi]][actions[pi]])
 
-
                 list_returns.append(returns)
-
 
             if pi == n_steps - 1:
                 break
@@ -100,6 +98,6 @@ def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, 
     return Q, stats, botstats
 
 if __name__ == '__main__':
-    Q, stats, botstats = nstep_sarsa(env, 100)
+    Q, stats, botstats = nstep_sarsa(env, 250)
     plotting.plot_episode_stats(stats, title="N-Step sarsa")
     plotting.plot_bot_stats(botstats)
