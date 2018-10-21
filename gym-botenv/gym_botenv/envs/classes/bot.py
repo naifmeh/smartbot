@@ -1,4 +1,4 @@
-
+import ipaddress
 
 class Bot:
     """
@@ -6,16 +6,16 @@ class Bot:
     and other further values
     """
 
-    def __init__(self, ip: str, ua: str):
-        self.ip = ip
+    def __init__(self, ip: str, ua: str, use_plugs: bool, use_language: bool, webdriver: bool, use_permissions: bool,
+                 rate_load_pics=1.):
+        self.ip = ipaddress.IPv4Address(ip)
         self.ua = ua
-        self.use_plugins = False
-        self.use_language = False
-        self.webdriver = True
-        self.use_permissions = False
+        self.use_plugins = use_plugs
+        self.use_language = use_language
+        self.webdriver = webdriver
+        self.use_permissions = use_permissions
+        self.rate_load_pics = rate_load_pics
 
-    def overall_grade(self):
-        self.base_grade = 100
 
 
 

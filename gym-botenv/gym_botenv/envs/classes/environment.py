@@ -4,6 +4,7 @@ import numpy as np
 import os
 from .bot import Bot
 
+BOT_DETECTION_VISIT_LIMIT = 50
 
 class SecurityProvider:
 
@@ -64,29 +65,61 @@ class SecurityProvider:
 
 class Website:
 
-    def __init__(self, uid: uuid, SP: SecurityProvider, FP: bool, BB: bool, page_visited: int):
+    def __init__(self, uid: uuid, secu_provider: int, has_fp: bool, block_bots: bool, checks_permissions: bool,
+                 checks_plugins: bool, checks_webdriver: bool):
         self.id = uid
-        self.security_provider = SP
-        self.hasFingerprinting = FP
-        self.blockbots = BB
-        self.amount_page_visited = page_visited
-        self.value = 0
+        self.security_provider = secu_provider
+        self.hasFingerprinting = has_fp
+        self.block_bots = block_bots
+        self.checks_permissions = checks_permissions
+        self.checks_plugins = checks_plugins
+        self.checks_webdriver = checks_webdriver
+        self.bots_visited = {} # This should contain config - (amount, time step), at some timestep we can forg
 
-    def compute_value(self, security_providers: dict):
-        if self.security_provider != 0:
-            self.value = security_providers[self.security_provider].grade * 15 + \
-                         security_providers[self.security_provider].counter_visited * 10 \
-                         + int(self.hasFingerprinting) * 12 + int(self.blockbots) * 20 + \
-                         self.amount_page_visited * 10
-        else:
-            self.value = int(self.hasFingerprinting) * 12 + int(self.blockbots) * 20 + self.amount_page_visited * 10
+    def increment_visited_page(self, bot: Bot):
+        self.bots_visited[bot][0] += 1
 
-    def increment_visited_page(self):
-        self.amount_page_visited += 1
+    def increment_time_step(self):
+        for bot, (_, i) in self.bots_visited.items():
+            if i > 300:
+                self.bots_visited.pop(bot)
+            else:
+                self.bots_visited[bot][1] += 1
+
+    def should_block_bot(self, bot: Bot, dict_secu_providers: dict):
+        security_provider = dict_secu_providers[self.security_provider]
+        blocking = security_provider.should_block_bot(bot)
+        score = 0
+        if blocking:
+            score += 70
+
+        if bot in self.bots_visited.keys():
+            nb_visited = self.bots_visited[bot][0]
+            if nb_visited > BOT_DETECTION_VISIT_LIMIT:
+                self.bots_visited.pop(bot)
+                score += 50
+
+        if self.checks_permissions:
+            score += 10
+        if self.checks_plugins:
+            score += 10
+        if self.checks_webdriver:
+            score += 10
+
+        if bot.rate_load_pics < 1.:
+            score += (1. - bot.rate_load_pics) * 50
+
+
+
+
+
+
+
+
 
     def __str__(self):
         return """{ 'id' : %s, 'security_provider' : %d, 'fp' : %r, 'bb' : %r, 'visited' : %d } """ \
-                   % (self.id, self.security_provider, self.hasFingerprinting, self.blockbots, self.amount_page_visited)
+                   % (self.id, self.security_provider, self.hasFingerprinting, self.block_bots, )
 
 
 class State:

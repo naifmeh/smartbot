@@ -63,64 +63,12 @@ def generate_states(num_binary_params: int, params_pages: tuple, params_secu_pro
     :return: A tuple of states
     """
 
-    max_visited_page = params_pages[0]
-    range_visited_page = params_pages[1]
-    list_range_visited_page = []
-    for i in range(0, max_visited_page, range_visited_page):
-        list_range_visited_page.append((i, i + range_visited_page - 1))
-
-    max_security_provider = params_secu_provider[0]
-    range_page_secu_provider = params_secu_provider[1]
-    list_range_page_secu_provider = []
-    for i in range(0, max_security_provider, range_page_secu_provider):
-        list_range_page_secu_provider.append((i, i + range_page_secu_provider - 1))
-
-    list_states_features = []
-    for i in range(num_binary_params):
-        list_states_features.append(list(range(2)))
-
-    list_states_features.append(list_range_visited_page)
-    list_states_features.append(list_range_page_secu_provider)
-
-    states_tuple = list(itertools.product(*list_states_features))
-    #random.shuffle(states_tuple)
-    states = []
-    for state in states_tuple:
-        states.append(State(state))
-
-    return states
 
 
-def generate_actions(list_states: list):
-    """
-
-    :param list_states:
-    :return:
-    """
-    dict_actions = {}
-    len_states = len(list_states)
-    for i in range(len_states + 2):
-        if i >= len_states:
-            dict_actions[i] = ()
-            continue
-        dict_actions[i] = list_states[i]
-
-    return dict_actions
 
 
-def normalized_websites_values(list_website: list, security_providers: dict):
-    values = {}
-    for website in list_website:
-        website.compute_value(security_providers)
-        values[website.id] = website.value
 
-    maximum = max(values.items(), key=operator.itemgetter(1))[1]
-    minimum = min(values.items(), key=operator.itemgetter(1))[1]
 
-    for id, value in values.items():
-        values[id] = float(float(value - minimum) / float(maximum - minimum))
-
-    return values
 
 
 def is_bot_blocked(website: Website, values_dict: dict):
@@ -130,53 +78,8 @@ def is_bot_blocked(website: Website, values_dict: dict):
     return int(np.random.choice([0, 1], p=probs))
 
 
-def websites_to_state(list_websites: list, list_states: list, security_providers: dict):
-    state_map = {}
-    copy_list_website = list_websites.copy()
-    for state in list_states:
-        state_map[state] = []
-        for index, website in enumerate(copy_list_website):
-            if state.useFP != website.hasFingerprinting:
-                continue
-            elif state.useBB != website.blockbots:
-                continue
-            elif website.amount_page_visited not in range(state.rangeVisitedPage[0], state.rangeVisitedPage[1] + 1):
-                continue
-            else:
-                security_provider = website.security_provider
-                if security_provider == 0:
-                    state_map[state].append(website)
-                    copy_list_website.pop(index)
-                else:
-                    if security_providers[security_provider].counter_visited in range(state.rangeVisitedSecuProvider[0],
-                                                                                      state.rangeVisitedSecuProvider[
-                                                                                          1] + 1):
-                        state_map[state].append(website)
-                        copy_list_website.pop(index)
-
-    return state_map
 
 
-def upgrade_state_list(website, state, state_map: dict, security_providers: dict):
-    state_map[state].pop(state_map[state].index(website))
-    for state, _ in state_map.items():
-        if state.useFP != website.hasFingerprinting:
-            continue
-        elif state.useBB != website.blockbots:
-            continue
-        elif website.amount_page_visited not in range(state.rangeVisitedPage[0], state.rangeVisitedPage[1] + 1):
-            continue
-        else:
-            security_provider = website.security_provider
-            if security_provider == 0:
-                state_map[state].append(website)
-                break
-            else:
-                if security_providers[security_provider].counter_visited in range(state.rangeVisitedSecuProvider[0],
-                                                                                  state.rangeVisitedSecuProvider[
-                                                                                      1] + 1):
-                    state_map[state].append(website)
-                    break
 
 
 def initiate_bot():
@@ -209,25 +112,7 @@ class BotenvEnv(gym.Env):
     """
 
     def __init__(self, num_steps, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
-
-        self.security_providers = generate_security_providers(nSP, (0, 10))
-        self.sites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb)
-        self.states = generate_states(2, (100, 10), (1000, 50))
-        self.actions = generate_actions(self.states)  # dict map action - state
-        self.max_steps = num_steps
-        self.bot = initiate_bot()
-
-        self.state = self.states[0]
-        self.action = 0
-        self.observation = self.state
-        self.reward = 0
-        self.website = 0
-
-        self.nA = len(self.actions)
-        self.nStates = len(self.states)
-        self.nSteps = 0
-
-        self.states_map = websites_to_state(self.sites, self.states, self.security_providers)
+        pass
 
     def step(self, action):
         """
@@ -238,25 +123,7 @@ class BotenvEnv(gym.Env):
         :param bot:
         :return: tuple containing the next state, the reward of this time step, and a boolean done.
         """
-        self.action = action
-        action_bundle = Actions(self.actions)
-
-        reward = 0
-        done = False
-        # TODO: Make actions, launch bot, wait for return signal and return state, reward, done or no
-        action_result = action_bundle.map_actions(action, self.bot)
-        self.bot.ua = action_result[1]
-        self.bot.ip = action_result[2]
-        self.state = action_result[0] if len(action_result[0]) > 1 else self.state
-
-        reward = self._fake_crawl(self.state, self.bot)
-        self.nSteps += 1
-
-        self.reward = reward
-        if self.nSteps == self.max_steps:
-            done = True
-
-        return self.state, reward, done, ''
+        pass
 
     def _fake_crawl(self, state: State, bot: Bot):
         """
@@ -292,31 +159,8 @@ class BotenvEnv(gym.Env):
 
         return 5
 
-    def get_state_map(self):
-        return {x: i for i, x in enumerate(self.states)}
-
     def reset(self, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
-        self.security_providers = generate_security_providers(nSP, (1, 10))
-        self.sites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb)
-        self.bot = initiate_bot()
-
-        self.state = self.states[0]
-        self.action = 0
-        self.observation = self.state
-        self.reward = 0
-        self.website = 0
-
-        self.nSteps = 0
-
-        self.states_map = websites_to_state(self.sites, self.states, self.security_providers)
-
-        return self.state
+        pass
 
     def render(self, mode='all', close=False):
-        if mode == 'blocked' and self.reward >= 0:
-            return
-        print("------------- Step {}".format(self.nSteps))
-        print("State : {}".format(self.state))
-        print("Action taken at step t-1 : {}".format(self.action))
-        print("Website visited : {}".format(self.website))
-        print("Reward for step t : {}".format(self.reward), end='\n\n')
+        pass
