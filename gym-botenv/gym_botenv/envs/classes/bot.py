@@ -8,7 +8,7 @@ class Bot:
 
     def __init__(self, ip: str, ua: str, use_plugs: bool, use_language: bool, webdriver: bool, use_permissions: bool,
                  rate_load_pics=1.):
-        self.ip = ipaddress.IPv4Address(ip)
+        self.ip = ip
         self.ua = ua
         self.use_plugins = use_plugs
         self.use_language = use_language

@@ -3,8 +3,10 @@ import itertools
 import numpy as np
 import os
 from .bot import Bot
+from .utils import compute_blocking, read_last_entry
 
 BOT_DETECTION_VISIT_LIMIT = 50
+
 
 class SecurityProvider:
 
@@ -66,7 +68,7 @@ class SecurityProvider:
 class Website:
 
     def __init__(self, uid: uuid, secu_provider: int, has_fp: bool, block_bots: bool, checks_permissions: bool,
-                 checks_plugins: bool, checks_webdriver: bool):
+                 checks_plugins: bool, checks_webdriver: bool, checks_referer: bool):
         self.id = uid
         self.security_provider = secu_provider
         self.hasFingerprinting = has_fp
@@ -74,7 +76,8 @@ class Website:
         self.checks_permissions = checks_permissions
         self.checks_plugins = checks_plugins
         self.checks_webdriver = checks_webdriver
-        self.bots_visited = {} # This should contain config - (amount, time step), at some timestep we can forg
+        self.checks_referer = checks_referer
+        self.bots_visited = {} # This should contain config - [amount, time step], at some timestep we can forge
 
     def increment_visited_page(self, bot: Bot):
         self.bots_visited[bot][0] += 1
@@ -85,6 +88,9 @@ class Website:
                 self.bots_visited.pop(bot)
             else:
                 self.bots_visited[bot][1] += 1
+
+    def add_bot(self, bot: Bot):
+        self.bots_visited[bot] = [1, 0]
 
     def should_block_bot(self, bot: Bot, dict_secu_providers: dict):
         security_provider = dict_secu_providers[self.security_provider]
@@ -105,17 +111,13 @@ class Website:
             score += 10
         if self.checks_webdriver:
             score += 10
+        if self.checks_referer:
+            score += 30
 
         if bot.rate_load_pics < 1.:
             score += (1. - bot.rate_load_pics) * 50
 
-
-
-
-
-
-
-
+        return compute_blocking(score)
 
     def __str__(self):
         return """{ 'id' : %s, 'security_provider' : %d, 'fp' : %r, 'bb' : %r, 'visited' : %d } """ \
@@ -144,22 +146,7 @@ class State:
         return 4
 
 
-def read_last_entry(filename: str):
-    """
-        Util function to push the last used item in a file to its last position. It
-        pops it and save it at the end of the file.
-        :param filename:
-        :return: first line of file passed in parameter
-    """
-    with open(filename, 'r+') as f:
-        first = f.readline()
-        data = f.read()
-        f.seek(0)
-        f.write(data)
-        f.write(first)
-        f.truncate()
 
-    return first
 
 
 class Actions:

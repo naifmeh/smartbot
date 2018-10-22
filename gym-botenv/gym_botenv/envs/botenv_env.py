@@ -7,6 +7,7 @@ import operator
 import os
 from .classes.environment import Website, State, SecurityProvider, Actions
 from .classes.environment import read_last_entry as read_line
+from .classes.utils import read_file_in_list
 from .classes.bot import Bot
 
 
@@ -20,40 +21,37 @@ def generate_security_providers(nSP: int, limits: tuple):
 
     return list_security_providers
 
-def generate_fake_sites(nSites: int, security_providers: dict, probSP: float, probFP: float, probBB: float):
+def generate_fake_sites(n_sites: int, security_providers: dict, prob_sp: float, prob_fp: float, prob_bb: float,
+                        checks_perms: float, checks_plugs: float, checks_webdrvr: bool, checks_ref: bool):
     """
+    Generate a list of fake websites with different attributes.
 
-    :param nSites: Amount of fake websites generated
-    :param nSP: Amount of security providers
-    :param probSP: Probability that a website has a security provider
-    :param probFP: Probability that a website has browser fingerprinting capabilities
-    :param probBB: Probability that a website block bots
     :return: list of nSites fake websites containing a tuple of values
     """
-    nSP = len(security_providers)
-    probsSP = np.ones(nSP, dtype=float) * probSP / (nSP - 1)
-    probsSP[0] = 1 - probSP
 
-    probsFP = np.ones(2, dtype=float) * probFP
-    probsFP[1] = 1 - probFP
+    secu_providers_probs = np.ones(len(security_providers), dtype=float) * (prob_sp/len(security_providers))
+    security_providers[0] = 1 - prob_sp
 
-    probsBB = np.ones(2, dtype=float) * probBB
-    probsBB[1] = 1 - probBB
-
-    list_website = []
-    for i in range(nSites):
+    liste_websites = []
+    for i in range(n_sites):
         id = str(uuid.uuid4())
-        SP = np.random.choice(list(security_providers.keys()), p=probsSP)
-        FP = np.random.choice([0, 1], p=probsFP)  # 0 : doesnt use fp, 1:use fp
-        BB = np.random.choice([0, 1], p=probsBB)  # 0: doesnt block bots, 1 block bots
-        num_page_visit = 0
-        website_obj = Website(id, SP, FP, BB, num_page_visit)
-        list_website.append(website_obj)
+        security_provider = np.random.choice(security_providers.keys(), p=secu_providers_probs)
+        block_bots = np.random.choice([True, False], p=[prob_bb, 1-prob_bb])
+        fingerprinting = np.random.choice([True, False], p=[prob_fp, 1-prob_fp])
+        checks_permissions = np.random.choice([True, False], p=[checks_perms, 1-checks_perms])
+        checks_plugins = np.random.choice([True, False], p=[checks_plugs, 1-checks_plugs])
+        checks_webdriver = np.random.choice([True, False], p=[checks_webdrvr, 1-checks_webdrvr])
+        checks_referer = np.random.choice([True, False], p=[checks_ref, 1-checks_ref])
 
-    return list_website
+        liste_websites.append(Website(id, security_provider, fingerprinting, block_bots, checks_permissions,
+                                      checks_plugins, checks_webdriver, checks_referer))
+
+    return liste_websites
 
 
-def generate_states(num_binary_params: int, params_pages: tuple, params_secu_provider: tuple):
+
+
+def generate_states(num_binary_params: int,  params_secu_provider: tuple):
     """
 
     :param list_website: List of website's
@@ -63,8 +61,13 @@ def generate_states(num_binary_params: int, params_pages: tuple, params_secu_pro
     :return: A tuple of states
     """
 
+    list_load_pics = [x for x in range(0, 11)]
+    list_load_pics = np.divide(list_load_pics, 10)
 
+    uas = read_file_in_list('./data/uas')
+    ips = read_file_in_list('./data/ips')
 
+    # TODO complete states generation
 
 
 
