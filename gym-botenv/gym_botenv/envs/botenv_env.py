@@ -30,13 +30,14 @@ def generate_fake_sites(n_sites: int, security_providers: dict, prob_sp: float, 
     :return: list of nSites fake websites containing a tuple of values
     """
 
-    secu_providers_probs = np.ones(len(security_providers), dtype=float) * (prob_sp/len(security_providers))
-    security_providers[0] = 1 - prob_sp
+    secu_providers_probs = np.ones(len(security_providers), dtype=float) * (prob_sp/(len(security_providers)-1))
+    secu_providers_probs[0] = 1 - prob_sp
 
     liste_websites = []
     for i in range(n_sites):
         id = str(uuid.uuid4())
-        security_provider = np.random.choice(security_providers.keys(), p=secu_providers_probs)
+
+        security_provider = np.random.choice(list(security_providers.keys()), p=secu_providers_probs)
         block_bots = np.random.choice([True, False], p=[prob_bb, 1-prob_bb])
         fingerprinting = np.random.choice([True, False], p=[prob_fp, 1-prob_fp])
         checks_permissions = np.random.choice([True, False], p=[checks_perms, 1-checks_perms])
@@ -63,8 +64,9 @@ def generate_states():
     list_load_pics = [x for x in range(0, 11)]
     list_load_pics = np.divide(list_load_pics, 10)
 
-    uas = read_file_as_list('./data/uas')
-    ips = read_file_as_list('./data/ips')
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    uas = read_file_as_list(os.path.join(current_dir, 'data/uas'))
+    ips = read_file_as_list(os.path.join(current_dir, 'data/ips'))
 
     plugins = [True, False]
     language = plugins
@@ -97,7 +99,10 @@ def initiate_bot():
     ip = read_line(os.path.join(directory, "data/ips"))
     ua = read_line(os.path.join(directory, "data/uas"))
 
-    return Bot(ip, ua)
+    return Bot(ip, ua, False, False, False, False)
+
+def normalize_values(minx, maxx, a, b,  value):
+    return (b - a)*((value - minx)/(maxx - minx)) + a
 
 
 class BotenvEnv(gym.Env):
@@ -132,6 +137,7 @@ class BotenvEnv(gym.Env):
         self.observation = self.state
         self.reward = 0
         self.website = 0
+        self.count_success_crawl = 0
 
         self.nA = len(self.actions)
         self.nStates = len(self.states)
@@ -152,7 +158,7 @@ class BotenvEnv(gym.Env):
         reward = 0
         done = False
 
-        action_result = Actions.map_action(action, self.bot)
+        action_result = Actions.map_actions(self.action, self.bot)
         self.bot.ua = action_result[0]
         self.bot.ip = action_result[1]
         self.bot.rate_load_pics = action_result[2]
@@ -167,7 +173,6 @@ class BotenvEnv(gym.Env):
 
         return self.state, reward, done, ''
 
-
     def _fake_crawl(self, state: State, bot: Bot):
         """
         This private method will fake crawl a website corresponding to a state. The bot will get blocked by
@@ -177,10 +182,46 @@ class BotenvEnv(gym.Env):
         :param bot: the bot
         :return: the reward (0 for not blocked)
         """
-        pass
+
+        self.website = np.random.choice(self.websites)
+        self.websites.pop(self.websites.index(self.website))
+        self.website.increment_time_step()
+        self.website.increment_visited_page(self.bot)
+        self.websites.append(self.website)
+
+        should_block, score = self.website.should_block_bot(self.bot, self.security_providers)
+        if should_block:
+            reward = normalize_values(0, 230, -5, -10, score)
+        else:
+            reward = 1
+            self.count_success_crawl +=1
+
+        if self.nSteps == self.max_steps-1:
+            if self.count_success_crawl > 0.8 * self.max_steps:
+                reward += 50
+            else:
+                reward -= 50
+
+        return reward
+
 
     def reset(self, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
-        pass
+        self.security_providers = generate_security_providers(nSP, (0, 10))
+        self.websites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb, 0.2, 0.2,
+                                            0.1, 0.5)
+
+        self.bot = initiate_bot()
+
+        self.state = self.states[0]
+        self.action = 0
+        self.observation = self.state
+        self.reward = 0
+        self.website = 0
+        self.count_success_crawl = 0
+
+
+        self.nSteps = 0
+
 
     def render(self, mode='all', close=False):
         pass

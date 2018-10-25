@@ -3,8 +3,10 @@ import numpy as np
 import sys
 import time
 
-if "../gym-botenv/" not in sys.path:
-    sys.path.append("../gym-botenv/")
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, os.path.join(parentdir, "gym-botenv"))
 
 from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
@@ -62,7 +64,7 @@ def sarsa_lambda(env, num_episodes, discount=0.9, alpha=0.01, trace_decay=0.9, e
             stats.episode_rewards[i_episode] += reward
             if reward <= -1:
                 botstats.blocked[i_episode] += 1
-            elif reward >= 5:
+            elif reward >= 1:
                 botstats.not_blocked[i_episode] += 1
 
             E[state][action] += 1

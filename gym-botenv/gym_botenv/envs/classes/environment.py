@@ -80,7 +80,10 @@ class Website:
         self.bots_visited = {} # This should contain config - [amount, time step], at some timestep we can forge
 
     def increment_visited_page(self, bot: Bot):
-        self.bots_visited[bot][0] += 1
+        if bot in self.bots_visited.keys():
+            self.bots_visited[bot][0] += 1
+        else:
+            self.add_bot(bot)
 
     def increment_time_step(self):
         for bot, (_, i) in self.bots_visited.items():
@@ -93,11 +96,15 @@ class Website:
         self.bots_visited[bot] = [1, 0]
 
     def should_block_bot(self, bot: Bot, dict_secu_providers: dict):
-        security_provider = dict_secu_providers[self.security_provider]
-        blocking = security_provider.should_block_bot(bot)
+        blocking = False
+        if self.security_provider >= 1:
+            security_provider = dict_secu_providers[self.security_provider]
+            blocking = security_provider.should_block_bot(bot)
         score = 0
         if blocking:
             score += 70
+
+            #TODO check bot in already visited
 
         if bot in self.bots_visited.keys():
             nb_visited = self.bots_visited[bot][0]
@@ -117,7 +124,7 @@ class Website:
         if bot.rate_load_pics < 1.:
             score += (1. - bot.rate_load_pics) * 50
 
-        return compute_blocking(score)
+        return compute_blocking(score), score
 
     def __str__(self):
         return """{ 'id' : %s, 'security_provider' : %d, 'fp' : %r, 'bb' : %r, 'visited' : %d } """ \
@@ -132,7 +139,7 @@ class State:
     """
 
     def __init__(self, state: tuple):
-        assert len(state) >= 4
+        assert len(state) >= 3
         self.ua = state[0]
         self.ip = state[1]
         self.rate_pic = state[2]
