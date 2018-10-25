@@ -21,6 +21,7 @@ def generate_security_providers(nSP: int, limits: tuple):
 
     return list_security_providers
 
+
 def generate_fake_sites(n_sites: int, security_providers: dict, prob_sp: float, prob_fp: float, prob_bb: float,
                         checks_perms: float, checks_plugs: float, checks_webdrvr: bool, checks_ref: bool):
     """
@@ -71,8 +72,12 @@ def generate_states():
     permissions = plugins # TODO: Include them
 
     combination = list(itertools.product(*[uas, ips, list(list_load_pics)]))
+    states = []
+    for state in combination:
+        states.append(State(state))
 
-    return combination
+    del combination
+    return states
 
 
 
@@ -112,8 +117,26 @@ class BotenvEnv(gym.Env):
 
     """
 
-    def __init__(self, num_steps, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
-        pass
+    def __init__(self, num_steps=1000, n_sites=300, nSP=10, prob_sp=1 / 10, prob_fp=1 / 3, prob_bb=1 / 50):
+        self.max_steps = num_steps
+        self.states = generate_states()
+        self.security_providers = generate_security_providers(nSP, (0, 10))
+        self.websites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb, 0.2, 0.2,
+                                            0.1, 0.5)
+
+        self.actions = Actions.generate_actions_combination(list(range(3)))
+        self.bot = initiate_bot()
+
+        self.state = self.states[0]
+        self.action = 0
+        self.observation = self.state
+        self.reward = 0
+        self.website = 0
+
+        self.nA = len(self.actions)
+        self.nStates = len(self.states)
+        self.nSteps = 0
+
 
     def step(self, action):
         """
@@ -124,7 +147,26 @@ class BotenvEnv(gym.Env):
         :param bot:
         :return: tuple containing the next state, the reward of this time step, and a boolean done.
         """
-        pass
+        self.action = self.actions[action]
+
+        reward = 0
+        done = False
+
+        action_result = Actions.map_action(action, self.bot)
+        self.bot.ua = action_result[0]
+        self.bot.ip = action_result[1]
+        self.bot.rate_load_pics = action_result[2]
+
+        self.state = action_result
+
+        reward = self._fake_crawl(self.state, self.bot)
+        self.nSteps += 1
+
+        if self.nSteps == self.max_steps:
+            done = True
+
+        return self.state, reward, done, ''
+
 
     def _fake_crawl(self, state: State, bot: Bot):
         """
@@ -135,30 +177,7 @@ class BotenvEnv(gym.Env):
         :param bot: the bot
         :return: the reward (0 for not blocked)
         """
-        if len(self.states_map[state]) < 1:
-            self.website = 0
-            return -0.1
-        website = self.states_map[state][0]
-        website.amount_page_visited += 1
-        self.website = website
-
-        upgrade_state_list(website, state, self.states_map, self.security_providers)
-
-        if website.security_provider > 0:
-            secu_provider = self.security_providers[website.security_provider]
-            secu_provider.increment_counter()
-            secu_provider.update_bot_visit(bot)
-            self.security_providers[website.security_provider] = secu_provider
-            block_bot = secu_provider.should_block_bot(bot)
-            if block_bot:
-                return -10
-
-        values = normalized_websites_values(self.sites, self.security_providers)
-        block_bot = is_bot_blocked(website, values)
-        if block_bot:
-            return -5
-
-        return 5
+        pass
 
     def reset(self, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
         pass
