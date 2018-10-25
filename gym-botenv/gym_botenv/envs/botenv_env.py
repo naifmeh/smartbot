@@ -7,7 +7,7 @@ import operator
 import os
 from .classes.environment import Website, State, SecurityProvider, Actions
 from .classes.environment import read_last_entry as read_line
-from .classes.utils import read_file_in_list
+from .classes.utils import read_file_as_list
 from .classes.bot import Bot
 
 
@@ -49,9 +49,7 @@ def generate_fake_sites(n_sites: int, security_providers: dict, prob_sp: float, 
     return liste_websites
 
 
-
-
-def generate_states(num_binary_params: int,  params_secu_provider: tuple):
+def generate_states():
     """
 
     :param list_website: List of website's
@@ -64,13 +62,17 @@ def generate_states(num_binary_params: int,  params_secu_provider: tuple):
     list_load_pics = [x for x in range(0, 11)]
     list_load_pics = np.divide(list_load_pics, 10)
 
-    uas = read_file_in_list('./data/uas')
-    ips = read_file_in_list('./data/ips')
+    uas = read_file_as_list('./data/uas')
+    ips = read_file_as_list('./data/ips')
 
-    # TODO complete states generation
+    plugins = [True, False]
+    language = plugins
+    webdriver = plugins
+    permissions = plugins # TODO: Include them
 
+    combination = list(itertools.product(*[uas, ips, list(list_load_pics)]))
 
-
+    return combination
 
 
 
@@ -79,10 +81,6 @@ def is_bot_blocked(website: Website, values_dict: dict):
     probs[0] = 1 - probs[1]
 
     return int(np.random.choice([0, 1], p=probs))
-
-
-
-
 
 
 def initiate_bot():

@@ -29,7 +29,7 @@ def read_last_entry(filename: str):
     return first
 
 
-def read_file_in_list(filename: str):
+def read_file_as_list(filename: str):
 
     with open(filename, 'r') as f:
         lines = f.readlines()
