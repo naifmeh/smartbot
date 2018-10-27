@@ -161,7 +161,7 @@ class BotenvEnv(gym.Env):
         reward = 0
         done = False
 
-        action_result = Actions.map_actions(self.action, self.bot)
+        action_result = Actions.map_actions(self.action, self.bot, self.websites)
         self.bot.ua = action_result[0]
         self.bot.ip = action_result[1]
         self.bot.rate_load_pics = action_result[2]
@@ -169,8 +169,9 @@ class BotenvEnv(gym.Env):
         self.bot.use_language = action_result[4]
         self.bot.webdriver = action_result[5]
         self.bot.use_permissions = action_result[6]
+        self.website = action_result[7]
 
-        self.state = self.state_map[action_result]
+        self.state = self.state_map[action_result[:7]]
 
         reward = self._fake_crawl(self.bot)
         self.nSteps += 1
@@ -189,8 +190,6 @@ class BotenvEnv(gym.Env):
         :param bot: the bot
         :return: the reward (0 for not blocked)
         """
-
-        self.website = np.random.choice(self.websites)
         self.websites.pop(self.websites.index(self.website))
         self.website.increment_time_step()
         self.website.increment_visited_page(bot)
@@ -211,8 +210,8 @@ class BotenvEnv(gym.Env):
             reward = 1
             self.count_success_crawl += 1
 
-        if self.nSteps == self.max_steps-1:
-            if self.count_success_crawl > 0.8 * self.max_steps:
+        if self.nSteps == self.max_steps:
+            if self.count_success_crawl > 0.85 * self.max_steps:
                 reward += 5
             else:
                 reward -= 5
@@ -220,10 +219,10 @@ class BotenvEnv(gym.Env):
         return reward
 
 
-    def reset(self, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
+    def reset(self, n_sites=100, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
         #self.security_providers = generate_security_providers(nSP, (0, 10))
-        #self.websites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb, 0.6, 0.6,
-                                          #  0.5, 0.5)
+        self.websites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb, 0.6, 0.6,
+                                            0.5, 0.5)
 
         self.bot = initiate_bot()
 

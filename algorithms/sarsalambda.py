@@ -62,9 +62,9 @@ def sarsa_lambda(env, num_episodes, discount=0.9, alpha=0.01, trace_decay=0.9, e
             delta = reward + discount*Q[next_state][next_action] - Q[state][action]
 
             stats.episode_rewards[i_episode] += reward
-            if reward <= -1:
+            if env.bot_history[-1]:
                 botstats.blocked[i_episode] += 1
-            elif reward >= 1:
+            else:
                 botstats.not_blocked[i_episode] += 1
 
             E[state][action] += 1

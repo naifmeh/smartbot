@@ -187,7 +187,7 @@ class Actions:
         return dico_actions
 
     @staticmethod
-    def map_actions(actions, bot: Bot):
+    def map_actions(actions, bot: Bot, websites: list):
         ua = bot.ua
         ip = bot.ip
         rate = bot.rate_load_pics
@@ -195,6 +195,7 @@ class Actions:
         language = bot.use_language
         webdriver = bot.webdriver
         permissions = bot.use_permissions
+        website = websites[0]
 
         directory = os.path.dirname(__file__)
 
@@ -216,7 +217,10 @@ class Actions:
                 webdriver = not webdriver
             elif action == 6:
                 permissions = not permissions
-
-        return ua, ip, round(rate, 1), plugins, language, webdriver, permissions
+            elif action == 7:
+                websites.pop(0)
+                websites.append(website)
+                website = websites[0]
+        return ua, ip, round(rate, 1), plugins, language, webdriver, permissions, website
 
 
