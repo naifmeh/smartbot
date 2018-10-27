@@ -12,7 +12,7 @@ from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
 from algorithms.utils import plotting
 
-env = BotenvEnv(1000)
+env = BotenvEnv(10000)
 
 
 def make_epsilon_greedy_policy(Q, epsilon, nA):
@@ -57,9 +57,9 @@ def sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
             next_action = np.random.choice(np.arange(len(next_action_probs)), p=next_action_probs)
 
             stats.episode_rewards[i_episode] += reward
-            if reward <= -1:
+            if env.bot_history[-1]:
                 botstats.blocked[i_episode] += 1
-            elif reward >= 0:
+            else:
                 botstats.not_blocked[i_episode] += 1
 
             # TD Update

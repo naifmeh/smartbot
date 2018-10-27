@@ -5,7 +5,7 @@ import os
 from .bot import Bot
 from .utils import compute_blocking, read_last_entry
 
-BOT_DETECTION_VISIT_LIMIT = 50
+BOT_DETECTION_VISIT_LIMIT = 1
 
 
 class SecurityProvider:
@@ -52,12 +52,12 @@ class SecurityProvider:
         else:
             prob = [1, 0]
 
-        if (bot.ua in self.list_uas.keys()) and (self.list_uas[bot.ua] > (30-self.grade)):
+        if (bot.ua in self.list_uas.keys()) and (self.list_uas[bot.ua] > (15-self.grade)):
             block = np.random.choice([True, False], p=prob)
             if block:
                 self.list_uas[bot.ua] = 0
             return block
-        if(bot.ip in self.list_ips.keys()) and(self.list_ips[bot.ip] > (30-self.grade)):
+        if(bot.ip in self.list_ips.keys()) and(self.list_ips[bot.ip] > (15-self.grade)):
             block = np.random.choice([True, False], p=prob)
             if block:
                 self.list_ips[bot.ip] = 0
@@ -80,13 +80,13 @@ class Website:
         self.bots_visited = {} # This should contain config - [amount, time step], at some timestep we can forge
 
     def increment_visited_page(self, bot: Bot):
-        if bot in self.bots_visited.keys():
-            self.bots_visited[bot][0] += 1
+        if bot.bot_tuple() in self.bots_visited.keys():
+            self.bots_visited[bot.bot_tuple()][0] += 1
         else:
-            self.add_bot(bot)
+            self.add_bot(bot.bot_tuple())
 
     def increment_time_step(self):
-        for bot, (_, i) in self.bots_visited.items():
+        for bot, (_, i) in list(self.bots_visited.items()):
             if i > 300:
                 self.bots_visited.pop(bot)
             else:
@@ -103,26 +103,36 @@ class Website:
         score = 0
         if blocking:
             score += 70
+            return True, score
 
-            #TODO check bot in already visited
+            #TODO Other way to check bots, also verify if boths use these permissions before
+            # blocking
 
-        if bot in self.bots_visited.keys():
-            nb_visited = self.bots_visited[bot][0]
+        if bot.bot_tuple() in self.bots_visited.keys():
+            nb_visited = self.bots_visited[bot.bot_tuple()][0]
             if nb_visited > BOT_DETECTION_VISIT_LIMIT:
-                self.bots_visited.pop(bot)
+                self.bots_visited.pop(bot.bot_tuple())
                 score += 50
+                return True, score
+
 
         if self.checks_permissions:
-            score += 10
+            if bot.use_permissions:
+                score += 10
         if self.checks_plugins:
-            score += 10
+            if bot.use_plugins:
+                score += 10
         if self.checks_webdriver:
-            score += 10
+            if bot.webdriver:
+                score += 10
         if self.checks_referer:
-            score += 30
+            if not bot.referer:
+                score += 30
+                return True, score
 
         if bot.rate_load_pics < 1.:
             score += (1. - bot.rate_load_pics) * 50
+
 
         return compute_blocking(score), score
 
@@ -146,7 +156,7 @@ class State:
 
     def __str__(self):
         return """ {'ua' : %r, 'ip' : %r, 'rate_pic' : %s }""" \
-               % (self.ua, self.ip, self.rate)
+               % (self.ua, self.ip, self.rate_pic)
 
     def __len__(self):
         return 3
@@ -181,19 +191,32 @@ class Actions:
         ua = bot.ua
         ip = bot.ip
         rate = bot.rate_load_pics
+        plugins = bot.use_plugins
+        language = bot.use_language
+        webdriver = bot.webdriver
+        permissions = bot.use_permissions
+
         directory = os.path.dirname(__file__)
 
         for action in range(len(actions)):
             if action == 0:
                 ua = read_last_entry(os.path.join(directory, "../data/uas"))
             elif action == 1:
-                ip = read_last_entry(os.path.join(directory, "../data/uas"))
+                ip = read_last_entry(os.path.join(directory, "../data/ips"))
             elif action == 2:
                 if bot.rate_load_pics > 0.9:
                     rate = 0.0
                 else:
                     rate = bot.rate_load_pics + 0.1
+            elif action == 3:
+                plugins = not plugins
+            elif action == 4:
+                language = not language
+            elif action == 5:
+                webdriver = not webdriver
+            elif action == 6:
+                permissions = not permissions
 
-        return ua, ip, rate
+        return ua, ip, round(rate, 1), plugins, language, webdriver, permissions
 
 

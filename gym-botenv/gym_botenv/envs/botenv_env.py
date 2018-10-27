@@ -73,10 +73,10 @@ def generate_states():
     webdriver = plugins
     permissions = plugins # TODO: Include them
 
-    combination = list(itertools.product(*[uas, ips, list(list_load_pics)]))
+    combination = list(itertools.product(*[uas, ips, list(list_load_pics), plugins, language, webdriver, permissions]))
     states = []
     for state in combination:
-        states.append(State(state))
+        states.append(state)
 
     del combination
     return states
@@ -138,10 +138,13 @@ class BotenvEnv(gym.Env):
         self.reward = 0
         self.website = 0
         self.count_success_crawl = 0
+        self.bot_history = []
 
         self.nA = len(self.actions)
         self.nStates = len(self.states)
         self.nSteps = 0
+
+        self.state_map = {x: x for x in self.states}
 
 
     def step(self, action):
@@ -162,10 +165,14 @@ class BotenvEnv(gym.Env):
         self.bot.ua = action_result[0]
         self.bot.ip = action_result[1]
         self.bot.rate_load_pics = action_result[2]
+        self.bot.use_plugins = action_result[3]
+        self.bot.use_language = action_result[4]
+        self.bot.webdriver = action_result[5]
+        self.bot.use_permissions = action_result[6]
 
-        self.state = action_result
+        self.state = self.state_map[action_result]
 
-        reward = self._fake_crawl(self.state, self.bot)
+        reward = self._fake_crawl(self.bot)
         self.nSteps += 1
 
         if self.nSteps == self.max_steps:
@@ -173,7 +180,7 @@ class BotenvEnv(gym.Env):
 
         return self.state, reward, done, ''
 
-    def _fake_crawl(self, state: State, bot: Bot):
+    def _fake_crawl(self,  bot: Bot):
         """
         This private method will fake crawl a website corresponding to a state. The bot will get blocked by
         a security provider if it's powerful (i.e a high grade) and if an IP or an UA has visited the
@@ -186,29 +193,37 @@ class BotenvEnv(gym.Env):
         self.website = np.random.choice(self.websites)
         self.websites.pop(self.websites.index(self.website))
         self.website.increment_time_step()
-        self.website.increment_visited_page(self.bot)
+        self.website.increment_visited_page(bot)
+        secu_provider = self.security_providers[self.website.security_provider]
+        if secu_provider :
+            secu_provider.update_bot_visit(self.bot)
+            secu_provider.increment_counter()
+        self.security_providers[self.website.security_provider] = secu_provider
         self.websites.append(self.website)
 
-        should_block, score = self.website.should_block_bot(self.bot, self.security_providers)
+
+        should_block, score = self.website.should_block_bot(bot, self.security_providers)
+        self.bot_history.append(should_block)
+
         if should_block:
-            reward = normalize_values(0, 230, -5, -10, score)
+            reward = normalize_values(0, 230, -1, -10, score)
         else:
             reward = 1
-            self.count_success_crawl +=1
+            self.count_success_crawl += 1
 
         if self.nSteps == self.max_steps-1:
             if self.count_success_crawl > 0.8 * self.max_steps:
-                reward += 50
+                reward += 5
             else:
-                reward -= 50
+                reward -= 5
 
         return reward
 
 
     def reset(self, n_sites=1000, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
-        self.security_providers = generate_security_providers(nSP, (0, 10))
-        self.websites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb, 0.2, 0.2,
-                                            0.1, 0.5)
+        #self.security_providers = generate_security_providers(nSP, (0, 10))
+        #self.websites = generate_fake_sites(n_sites, self.security_providers, prob_sp, prob_fp, prob_bb, 0.6, 0.6,
+                                          #  0.5, 0.5)
 
         self.bot = initiate_bot()
 
@@ -218,7 +233,7 @@ class BotenvEnv(gym.Env):
         self.reward = 0
         self.website = 0
         self.count_success_crawl = 0
-
+        self.bot_history = []
 
         self.nSteps = 0
 

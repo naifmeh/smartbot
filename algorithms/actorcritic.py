@@ -4,8 +4,10 @@ import sys
 import tensorflow as tf
 import collections
 
-if "../gym-botenv/" not in sys.path:
-    sys.path.append("../gym-botenv/")
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, os.path.join(parentdir, "gym-botenv"))
 
 from gym_botenv.envs.botenv_env import BotenvEnv
 from algorithms.utils import plotting
@@ -120,7 +122,7 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
             stats.episode_lengths[i_episode] = t
             if reward <= -1:
                 botstats.blocked[i_episode] += 1
-            elif reward >= 5:
+            elif reward >= 1:
                 botstats.not_blocked[i_episode] += 1
 
             # Calculate TD Target

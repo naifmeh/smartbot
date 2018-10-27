@@ -26,7 +26,7 @@ def read_last_entry(filename: str):
         f.write(first)
         f.truncate()
 
-    return first
+    return first.strip()
 
 
 def read_file_as_list(filename: str):
