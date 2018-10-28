@@ -34,15 +34,14 @@ def plot_bot_stats(stats, num_steps=1000, title="Bot results"):
     data_blocked = pd.Series(stats.blocked)
     N = range(len(data_not_blocked))
     others = [num_steps for _ in N]
-    p3 = plt.bar(N, others)
-    p1 = plt.bar(N, data_not_blocked)
-    p2 = plt.bar(N, data_blocked)
+    p2 = plt.bar(N, data_not_blocked, bottom=data_blocked)
+    p1 = plt.bar(N, data_blocked)
 
 
     # plt.bar(range(len(data_not_blocked)), data_not_blocked)
     plt.xlabel("Episode")
     plt.ylabel("Amount of successful crawls")
-    plt.legend((p1[0], p2[0], p3[0]), ('Not blocked', 'Blocked', "Not crawled"))
+    plt.legend((p2[0], p1[0]), ('Not blocked', 'Blocked'))
     plt.title(title)
 
     plt.show(fig)

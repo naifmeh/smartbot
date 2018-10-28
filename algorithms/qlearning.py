@@ -55,9 +55,9 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
             stats.episode_rewards[i_episode] += reward
             stats.episode_lengths[i_episode] = t
 
-            if reward <= -1:
+            if env.bot_history[-1]:
                 botstats.blocked[i_episode] += 1
-            elif reward >= 1:
+            else:
                 botstats.not_blocked[i_episode] += 1
 
             # TD update
@@ -78,7 +78,7 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
 
 
 if __name__ == '__main__':
-    Q, stats, botstats = q_learning(env, 250)
+    Q, stats, botstats = q_learning(env, 1000)
     plotting.plot_episode_stats(stats, title="QLearning")
     plotting.plot_bot_stats(botstats)
 

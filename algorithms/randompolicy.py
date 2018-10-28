@@ -13,7 +13,7 @@ from algorithms.utils import plotting
 
 if __name__ == '__main__':
 
-    botenv = BotenvEnv(5000)
+    botenv = BotenvEnv(1000)
     actions = [x for x in range(len(botenv.actions))]
 
     num_episodes = 500

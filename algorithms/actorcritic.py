@@ -41,7 +41,7 @@ class PolicyEstimator():
 
     def predict(self, state, sess=None):
          sess = sess or tf.get_default_session()
-         return sess.run(self.action_probs, { self.state: state })
+         return sess.run(self.action_probs, {self.state: state})
 
     def update(self, state, target, action, sess=None):
          sess = sess or tf.get_default_session()
@@ -98,7 +98,7 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
     )
 
     Transition = collections.namedtuple("Transition", ["state", "action", "reward", "next_state", "done"])
-    states_map = env.get_state_map()
+    states_map = env.states_map
 
     for i_episode in range(num_episodes):
 

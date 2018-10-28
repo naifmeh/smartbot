@@ -41,15 +41,15 @@ def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, 
 
     policy = make_epsilon_greedy_policy(Q, epsilon, env.nA)
     list_returns = [0]
-
+    rewards = [0]
     for i_episode in range(num_episodes):
 
-        print("\rEpisode {}/{}. Sum returns {}".format(i_episode + 1, num_episodes, list_returns[-1]), end="")
+        print("\rEpisode {}/{}. Sum returns {}".format(i_episode + 1, num_episodes, botstats.blocked[-2]), end="")
         sys.stdout.flush()
 
         state = env.reset()
 
-        rewards = [0]
+
         states = [state]
 
         action_probs = policy(state)
@@ -100,6 +100,6 @@ def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, 
     return Q, stats, botstats
 
 if __name__ == '__main__':
-    Q, stats, botstats = nstep_sarsa(env, 1000)
+    Q, stats, botstats = nstep_sarsa(env, 500)
     plotting.plot_episode_stats(stats, title="N-Step sarsa")
     plotting.plot_bot_stats(botstats)

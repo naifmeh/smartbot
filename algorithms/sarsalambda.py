@@ -90,11 +90,10 @@ def sarsa_lambda(env, num_episodes, discount=0.9, alpha=0.01, trace_decay=0.9, e
 
 if __name__ == '__main__':
     start = time.time()
-    Q, stats, botstats, title = sarsa_lambda(env, 150)
-    print(stats)
+    Q, stats, botstats, title = sarsa_lambda(env, 100)
     end = time.time()
     print("Algorithm took {} to execute".format(end-start))
-    plotting.plot_episode_stats(stats, title=title)
+    plotting.plot_episode_stats(stats, smoothing_window=2, title=title)
     plotting.plot_bot_stats(botstats)
 
 
