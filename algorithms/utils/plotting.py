@@ -35,7 +35,9 @@ def plot_bot_stats(stats, num_steps=1000, title="Bot results"):
     N = range(len(data_not_blocked))
     others = [num_steps for _ in N]
     p2 = plt.bar(N, data_not_blocked, bottom=data_blocked)
+    mean_blocked_data = data_blocked.rolling(10, min_periods=10).mean()
     p1 = plt.bar(N, data_blocked)
+    p3 = plt.plot(mean_blocked_data, color='r')
 
 
     # plt.bar(range(len(data_not_blocked)), data_not_blocked)
@@ -47,5 +49,7 @@ def plot_bot_stats(stats, num_steps=1000, title="Bot results"):
     plt.show(fig)
 
     return fig
+
+
 
 # Todo :  plot other stuffs

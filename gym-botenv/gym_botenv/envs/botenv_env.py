@@ -117,6 +117,8 @@ class BotenvEnv(gym.Env):
         self.websites = generate_fake_sites(n_sites, self.security_providers,
                                             prob_sp, prob_fp, prob_bb, 0.6, 0.6, 0.7)
         self.actions = list(range(13))
+        #self.actions_list = Actions.generate_actions_combination(list(range(13)))
+        #self.actions = list(range(len(self.actions_list)))
         self.nA = len(self.actions)
         self.states = generate_states()
         self.max_steps = num_steps
@@ -129,6 +131,7 @@ class BotenvEnv(gym.Env):
         self.reward = 0
         self.website = self.websites[0]
         self.bot_history = []
+        self.action_history = []
         self.count_success_crawls = 0
 
         self.nStates = len(self.states)
@@ -147,6 +150,7 @@ class BotenvEnv(gym.Env):
         :return: tuple containing the next state, the reward of this time step, and a boolean done.
         """
         self.action = (action,)
+        #self.action = self.actions_list[action]
         self.reward = 0
         done = False
 
@@ -179,8 +183,13 @@ class BotenvEnv(gym.Env):
         :param bot: the bot
         :return: the reward (0 for not blocked)
         """
+        if self.website.security_provider > 0:
+            secu_provider = self.security_providers[self.website.security_provider]
+            secu_provider.update_bot_visit(bot)
+            secu_provider.increment_timestep()
+            self.security_providers[self.website.security_provider] = secu_provider
 
-        should_block, reward = self.website.evaluate_bot(bot)
+        should_block, reward = self.website.evaluate_bot(bot, self.security_providers)
 
         self.bot_history.append(should_block)
         if not should_block:
@@ -205,6 +214,7 @@ class BotenvEnv(gym.Env):
         self.reward = 0
         self.count_success_crawls = 0
         self.bot_history = []
+
 
         self.nSteps = 0
 

@@ -27,14 +27,18 @@ class SecurityProvider:
     def update_bot_visit(self, bot: Bot):
 
         if bot.ua in self.list_uas.keys():
-            self.list_uas[bot.ua] += 1
+            self.list_uas[bot.ua][0] += 1
         else:
-            self.list_uas[bot.ua] = 1
+            self.list_uas[bot.ua] = [1, 1]
 
         if bot.ip in self.list_ips.keys():
-            self.list_ips[bot.ip] += 1
+            self.list_ips[bot.ip][0] += 1
         else:
-            self.list_ips[bot.ip] = 1
+            self.list_ips[bot.ip] = [1, 1]
+
+    def increment_timestep(self):
+        self.list_uas = {x: [i[0], i[1] + 1] for x, i in self.list_uas.items() if i[1] < (self.grade * 50)}
+        self.list_ips = {x: [i[0], i[1] + 1] for x, i in self.list_ips.items() if i[1] < (self.grade * 50)}
 
     def add_website(self, website):
         self.list_websites.append(website)
@@ -52,15 +56,11 @@ class SecurityProvider:
         else:
             prob = [1, 0]
 
-        if (bot.ua in self.list_uas.keys()) and (self.list_uas[bot.ua] > (15-self.grade)):
+        if (bot.ua in self.list_uas.keys()) and (self.list_uas[bot.ua][0] > ((6-self.grade) * 100)):
             block = np.random.choice([True, False], p=prob)
-            if block:
-                self.list_uas[bot.ua] = 0
             return block
-        if(bot.ip in self.list_ips.keys()) and(self.list_ips[bot.ip] > (15-self.grade)):
+        if(bot.ip in self.list_ips.keys()) and(self.list_ips[bot.ip][0] > ((6-self.grade) * 100)):
             block = np.random.choice([True, False], p=prob)
-            if block:
-                self.list_ips[bot.ip] = 0
             return block
         return False
 
@@ -95,7 +95,7 @@ class Website:
             self.ips_visited[bot_tuple[1]] = [1, 1]
 
     def increment_bot_timestep(self):
-        self.uas_visited = {x: [i[0], i[1]+1] for x, i in self.uas_visited.items() if i[1] < 100}
+        self.uas_visited = {x: [i[0], i[1] + 1] for x, i in self.uas_visited.items() if i[1] < 100}
         self.ips_visited = {x: [i[0], i[1] + 1] for x, i in self.ips_visited.items() if i[1] < 100}
 
     def _checks_ua(self, bot: Bot):
@@ -111,7 +111,16 @@ class Website:
                 return True
         return False
 
-    def evaluate_bot(self, bot: Bot):
+    def evaluate_bot(self, bot: Bot, security_providers: dict):
+        if self.security_provider > 0:
+            secu_provider = security_providers[self.security_provider]
+            bloque = secu_provider.should_block_bot(bot)
+            if bloque:
+                block = np.random.choice([True, False], p=[0.9, 0.1])
+                if block:
+                    return block, -1
+
+
 
         score = 0
         if self.checks_referer:
@@ -218,7 +227,6 @@ class Actions:
         page_visits = bot.page_visits
 
         directory = os.path.dirname(__file__)
-
         for action in actions:
             if action == 0:
                 ua = read_last_entry(os.path.join(directory, "../data/uas"))
