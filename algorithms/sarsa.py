@@ -12,7 +12,7 @@ from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
 from algorithms.utils import plotting
 
-env = BotenvEnv(10000)
+env = BotenvEnv(1000)
 
 
 def make_epsilon_greedy_policy(Q, epsilon, nA):

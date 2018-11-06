@@ -106,10 +106,15 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
 
         episode = []
 
+        env.action_history.append({x:0 for x in range(env.nA)})
+
         for t in itertools.count():
 
             action_probs = estimator_policy.predict(states_map[state])
             action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
+
+            env.action_history[i_episode][action] += 1
+
             next_state, reward, done, _ = env.step(action)
             #env.render(mode='blocked')
 
@@ -146,6 +151,9 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
                 break
 
             state = next_state
+
+    for i, episode in enumerate(env.action_history):
+        print("Episode {} : {}".format(i, episode))
 
     return stats, botstats
 

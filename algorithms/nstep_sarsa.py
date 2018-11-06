@@ -23,7 +23,7 @@ def make_epsilon_greedy_policy(Q, epsilon, nA):
     return policy_fn
 
 
-def nstep_sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1, n=5):
+def nstep_sarsa(env, num_episodes, discount_factor=0.5, alpha=0.5, epsilon=0.1, n=2):
 
     Q = defaultdict(lambda: np.zeros(env.nA))
 

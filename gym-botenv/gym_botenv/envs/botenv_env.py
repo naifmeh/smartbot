@@ -112,7 +112,7 @@ class BotenvEnv(gym.Env):
 
     """
 
-    def __init__(self, num_steps=1000, n_sites=300, nSP=10, prob_sp=1 / 10, prob_fp=1 / 3, prob_bb=1 / 50):
+    def __init__(self, num_steps=1000, n_sites=100, nSP=10, prob_sp=1 / 10, prob_fp=1 / 3, prob_bb=1 / 50):
         self.security_providers = generate_security_providers(nSP, (0, 10))
         self.websites = generate_fake_sites(n_sites, self.security_providers,
                                             prob_sp, prob_fp, prob_bb, 0.6, 0.6, 0.7)
@@ -191,6 +191,7 @@ class BotenvEnv(gym.Env):
 
         should_block, reward = self.website.evaluate_bot(bot, self.security_providers)
 
+
         self.bot_history.append(should_block)
         if not should_block:
             self.count_success_crawls += 1
@@ -204,9 +205,9 @@ class BotenvEnv(gym.Env):
 
     def reset(self, n_sites=100, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
 
-        #self.security_providers = generate_security_providers(nSP, (0, 10))
-        #self.websites = generate_fake_sites(n_sites, self.security_providers,
-        #                                   prob_sp, prob_fp, prob_bb, 0.6, 0.6, 0.7)
+        # self.security_providers = generate_security_providers(nSP, (0, 10))
+        self.websites = generate_fake_sites(n_sites, self.security_providers,
+                                            prob_sp, prob_fp, prob_bb, 0.6, 0.6, 0.7)
 
         self.state = self.states[0]
         self.action = 0
@@ -214,7 +215,6 @@ class BotenvEnv(gym.Env):
         self.reward = 0
         self.count_success_crawls = 0
         self.bot_history = []
-
 
         self.nSteps = 0
 
