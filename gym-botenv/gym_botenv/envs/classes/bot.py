@@ -8,10 +8,10 @@ class Bot:
     and other further values
     """
 
-    def __init__(self, ip: str, ua: str, page_visits: tuple, use_head: bool, load_documents: bool,
+    def __init__(self, proxy: str, ua: str, page_visits: tuple, use_head: bool, load_documents: bool,
                  use_referer: bool, rate_load_pics=1.):
         self.id = str(uuid.uuid4())
-        self.ip = ip
+        self.proxy = proxy
         self.ua = ua
         self.referer = use_referer
         self.head = use_head

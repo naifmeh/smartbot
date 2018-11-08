@@ -1,8 +1,8 @@
 {
   "name": "crawler",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Little crawler to get list of proxies",
+  "main": "proxies.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

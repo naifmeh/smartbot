@@ -37,3 +37,16 @@ def read_file_as_list(filename: str):
     lines = [x.strip() for x in lines]
 
     return lines
+
+
+def get_tuple_range(infos: tuple):
+    """
+
+    :param infos: Tuple containing (Max, step)
+    :return: List of tuples of ranges
+    """
+    liste = []
+    for i in range(0, infos[0]-infos[1] + 1, infos[1]):
+        liste.append((i, i + infos[0]))
+
+    return liste
