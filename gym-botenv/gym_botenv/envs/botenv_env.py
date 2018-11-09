@@ -1,25 +1,7 @@
 import gym
-import random
 import os
-from .classes.Website import Website, State, SecurityProvider, Actions
 from .classes.Website import read_last_entry as read_line
-from .classes.utils import read_file_as_list
-from .classes.bot import Bot
-
-
-
-
-
-def generate_security_providers(nSP: int, limits: tuple):
-    """
-    """
-    list_security_providers = {0: None}
-    for i in range(1, nSP+1):
-        grade = random.randint(limits[0], limits[1] + 1)
-        list_security_providers[i] = SecurityProvider(i, grade)
-
-    return list_security_providers
-
+from .classes.Bot import Bot
 
 
 def initiate_bot():

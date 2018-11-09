@@ -1,6 +1,7 @@
 import itertools
 from .utils import get_tuple_range
 
+
 class State:
     """
     Class representing states.

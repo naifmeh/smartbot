@@ -1,6 +1,6 @@
 import uuid
 import numpy as np
-from .bot import Bot
+from .Bot import Bot
 from .Proxy import Proxy
 
 
@@ -46,62 +46,41 @@ class Website:
                 return True # Introduce probability according to grade
         return False
 
-    def _checks_ip(self, bot: Bot):
+    def _checks_proxy(self, bot: Bot):
         if bot.proxy in self.ips_visited:
             if self.ips_visited[bot.ip][0] > ((6-self.grade)*25):
                 return True
         return False
 
-    def evaluate_bot(self, bot: Bot, security_providers: dict):
-        if self.security_provider > 0:
-            secu_provider = security_providers[self.security_provider]
-            bloque = secu_provider.should_block_bot(bot)
-            if bloque:
-                block = np.random.choice([True, False], p=[0.9, 0.1])
-                if block:
-                    return block, -1
+    def evaluate_bot(self, bot: Bot):
+
+        def normalize(value: int, maxi: int): return value/maxi
+
+        def compute_blocking(prob: float): return np.random.choice([True, False],p = [prob, 1-prob])
 
         score = 0
+
         if self.checks_referer:
-            if not bot.referer:
                 score += 10
         if self.checks_head:
-            if bot.head:
                 score += 10
         if self.check_image_rate:
             if bot.rate_load_pics < 0.3:
-                score += 10
+                score += 20
             elif 0.3 < bot.rate_load_pics < 0.7:
                 score += 5
-        if score == 25:
-            block = np.random.choice([True, False], p=[0.8, 0.2])
-            if block:
-                return True, -5
-        elif 25 > score > 10:
-            block = np.random.choice([True, False], p=[0.3, 0.7])
-            if block:
-                return True, -5
 
-        second_score = 0
-        if self._checks_ua(bot):
-            second_score += 10
+        if self._checks_proxy(bot):
+            score += 30
         if self._checks_ip(bot):
-            second_score += 10
+            score += 50
 
-        if second_score == 20:
-            return True, -5
-        elif second_score == 10:
-            return np.random.choice([True, False], p=[0.8, 0.2]), -3
+        # if bot.page_visits > self.average_page_visits[1]:
+        #     return True, -3
 
-        if bot.page_visits > self.average_page_visits[1]:
-            return True, -3
+        score += self.grade * 10
 
-        if bot.documents and self.grade >= 3:
-            block = np.random.choice([True, False], p=[0.6, 0.4])
-            if block:
-                return True, -3
-
-        return False, 3
+        return compute_blocking(normalize(score, 170))
 
     def __str__(self):
         return """{ 'id' : %s, 'security_provider' : %d, 'fp' : %r, 'bb' : %r, 'visited' : %d } """ \

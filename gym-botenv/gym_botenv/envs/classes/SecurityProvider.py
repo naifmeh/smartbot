@@ -1,5 +1,7 @@
 import numpy as np
-from .bot import Bot
+import random
+from .Bot import Bot
+
 
 class SecurityProvider:
 
@@ -13,8 +15,6 @@ class SecurityProvider:
         self.list_uas = {}
 
     def increment_counter(self):
-        if(self.id == 0):
-            print("Updated SP with value 0")
         self.counter_visited += 1
 
     def update_bot_visit(self, bot: Bot):
@@ -41,7 +41,8 @@ class SecurityProvider:
         highest_prob = 0.99
         lowest_grade = 1
         highest_grade = 10
-        formula = lambda x: ((x-lowest_grade)*(highest_prob - lowest_prob))/(highest_grade - lowest_grade) + lowest_prob
+
+        def formula(x): return ((x-lowest_grade)*(highest_prob - lowest_prob))/(highest_grade - lowest_grade) + lowest_prob
 
         prob = np.ones(2, dtype=float) * formula(self.grade)
         if prob[1] <= 1:
@@ -56,4 +57,19 @@ class SecurityProvider:
             block = np.random.choice([True, False], p=prob)
             return block
         return False
+
+    @staticmethod
+    def generate_security_providers(nSP: int, limits: tuple):
+        """
+        Generate security providers
+        :param nSP:
+        :param limits:
+        :return: Dictionary of security providers
+        """
+        list_security_providers = {0: None}
+        for i in range(1, nSP + 1):
+            grade = random.randint(limits[0], limits[1] + 1)
+            list_security_providers[i] = SecurityProvider(i, grade)
+
+        return list_security_providers
 
