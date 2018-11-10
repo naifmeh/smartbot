@@ -6,12 +6,11 @@ from .Proxy import Proxy
 
 class Website:
 
-    def __init__(self, uid: uuid, grade:int, secu_provider: int, country: str, has_fp: bool, block_bots: bool, checks_head: bool,
+    def __init__(self, uid: uuid, grade:int, secu_provider: int, has_fp: bool, block_bots: bool, checks_head: bool,
                  checks_referer: bool, checks_rate: bool, average_visit: int):
         self.id = uid
         self.grade = grade
         self.security_provider = secu_provider
-        self.country = country
 
         self.use_fp = has_fp
         self.block_bots = block_bots
@@ -105,7 +104,6 @@ class Website:
             id = str(uuid.uuid4())
 
             security_provider = np.random.choice(list(security_providers.keys()), p=secu_providers_probs)
-            domain = np.random.choice(list(set(proxies['CODE'])))
             block_bots = np.random.choice([True, False], p=[prob_bb, 1 - prob_bb])
             fingerprinting = np.random.choice([True, False], p=[prob_fp, 1 - prob_fp])
             checks_referer = np.random.choice([True, False], p=[checks_ref, 1 - checks_ref])
@@ -115,7 +113,7 @@ class Website:
             grade = np.random.choice(list(range(1, 6)))
             page_visits = {5 - i: (x, x + 10) for i, x in enumerate(list(range(0, 50, 10)))}
 
-            liste_websites.append(Website(id, grade, security_provider, domain, fingerprinting, block_bots, checks_head,
+            liste_websites.append(Website(id, grade, security_provider, fingerprinting, block_bots, checks_head,
                                           checks_referer, checks_image, page_visits[grade]))
 
         return liste_websites
