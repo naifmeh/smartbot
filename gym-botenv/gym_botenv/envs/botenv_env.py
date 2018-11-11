@@ -4,19 +4,22 @@ from .classes.Website import *
 from .classes.State import *
 from .classes.Proxy import *
 from .classes.Bot import Bot
+from .classes.UserAgent import *
+from .classes.Action import *
+from .classes.utils import read_last_entry
 
 
-def initiate_bot():
+def initiate_bot(proxi, usera):
     """
     Function to initiate the bot
     :return:
     """
     directory = os.path.dirname(__file__)
 
-    proxy = Proxy.populate_proxies()[0]
-    ua = read_last_entry(os.path.join(directory, "data/uas"))
+    proxy = proxi
+    ua = usera
 
-    return Bot(proxy, ua, (0, 10), False, True, True)
+    return Bot(proxy, ua)
 
 
 class BotenvEnv(gym.Env):
@@ -37,8 +40,8 @@ class BotenvEnv(gym.Env):
     """
 
     def __init__(self, num_steps=1000, n_sites=100, nSP=10, prob_sp=1 / 10, prob_fp=1 / 3, prob_bb=1 / 50):
-        self.websites = Website.generate_fake_sites(n_sites, prob_sp, prob_fb, prob_bb, 0.4, 0.4 )
-        self.states_tuple, self.states_obj = States.generate_states((1000, 100), (1000, 100), (1000, 50))
+        self.websites = Website.generate_fake_sites(n_sites, prob_sp, prob_fp , prob_bb, 0.4, 0.4 )
+        self.states_tuple, self.states_obj = State.generate_states((1000, 100), (1000, 100), (1000, 50))
         self.proxies = Proxy.populate_proxies()
         self.useragents = Useragent.populate_agents()
         self.actions = list(range(4))
@@ -47,9 +50,9 @@ class BotenvEnv(gym.Env):
         self.nStates = len(self.states_tuple)
         self.max_steps = num_steps
 
-        self.bot = initiate_bot()
+        self.bot = initiate_bot(self.proxies[0], self.useragents[0])
 
-        self.state = self.states_tuple[0]
+        self.state = self.states_obj[0]
         self.action = (0,)
         self.observation = self.state
         self.reward = 0
@@ -60,7 +63,7 @@ class BotenvEnv(gym.Env):
 
         self.nSteps = 0
         self.states_dict, self.websites_dict = Website.sort_in_states(self.states_obj, self.websites)
-        self.proxies_dict =  Proxy.sort_in_states(self.states_dict, self.proxies)
+        self.proxies_dict = Proxy.sort_in_states(self.states_dict, self.proxies)
         self.uas_dict = Useragent.sort_in_states(self.states_dict, self.useragents)
 
     def step(self, action):
@@ -76,22 +79,29 @@ class BotenvEnv(gym.Env):
         self.reward = 0
         done = False
 
-        action_result = Actions.map_actions(self.action, self.bot, self.state, self.states_dict)
+        if self.website != None:
+            rearrange_website(self.states_dict, self.websites_dict, self.website)
+        rearrange_ua(self.states_dict, self.uas_dict, self.bot.ua)
+        rearrange_proxy(self.states_dict, self.proxies_dict, self.bot.proxy)
+
+        action_result = Actions.map_actions(self.action, self.bot, self.state, self.states_dict, self.websites_dict,
+                                            self.uas_dict, self.proxies_dict)
         self.bot.ua = action_result[0]
         self.bot.ua.increment_counter()
         self.bot.proxy = action_result[1]
         self.bot.proxy.increment_counter()
         self.website = action_result[2]
-        if len(self.website) < 2:
+
+        print(action_result[3])
+        self.state = action_result[3]
+
+        if self.website == None:
             self.reward = -0.5
+            self.bot_history.append(False)
         else:
             self.reward = self._fake_crawl(self.bot)
-
-        self.website.update_bot_visit(self.bot)
-        self.website.increment_bot_timestep()
-        Website.rearrange_website(self.states_dict, self.websites_dict, self.website)
-        Useragent.rearrange_ua(self.states_dict, self.uas_dict, self.bot.ua)
-        Proxy.rearrange_proxy(self.states_dict, self.proxies_dict, self.bot.proxy)
+            self.website.update_bot_visit(self.bot)
+            self.website.increment_bot_timestep()
 
         self.nSteps += 1
 
@@ -110,11 +120,12 @@ class BotenvEnv(gym.Env):
         :return: the reward (0 for not blocked)
         """
 
-        def normalize(value: int, maxi: int, mini: int): return ((value)/(180))*(maxi-mini) + mini
+        def normalize(value: int, maxi: int, mini: int): return ((value)/(160))*(maxi-mini) + mini
 
-        score, shoud_block = self.website.evaluate_bot(bot)
+        score, should_block = self.website.evaluate_bot(bot)
+        self.bot_history.append(should_block)
         if should_block:
-            reward = normalize(value, -1, -5)
+            reward = normalize(score, -1, -5)
         else:
             reward = 5
         
@@ -122,15 +133,15 @@ class BotenvEnv(gym.Env):
 
 
     def reset(self, n_sites=100, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
-        self.websites = Website.generate_fake_sites(n_sites, prob_sp, prob_fb, prob_bb, 0.4, 0.4 )
+        self.websites = Website.generate_fake_sites(n_sites, prob_sp, prob_fp, prob_bb, 0.4, 0.4 )
         self.proxies = Proxy.populate_proxies()
         self.useragents = Useragent.populate_agents()
         self.actions = list(range(4))
 
 
-        self.bot = initiate_bot()
+        self.bot = initiate_bot(self.proxies[0], self.useragents[0])
 
-        self.state = self.states_tuple[0]
+        self.state = self.states_obj[0]
         self.action = (0,)
         self.observation = self.state
         self.reward = 0

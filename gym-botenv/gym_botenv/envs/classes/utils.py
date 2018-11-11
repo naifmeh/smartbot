@@ -39,14 +39,14 @@ def read_file_as_list(filename: str):
     return lines
 
 
-def get_tuple_range(infos: tuple):
+def get_tuple_range(info1, info2):
     """
 
     :param infos: Tuple containing (Max, step)
     :return: List of tuples of ranges
     """
     liste = []
-    for i in range(0, infos[0]-infos[1] + 1, infos[1]):
-        liste.append((i, i + infos[0]))
+    for i in range(0, info1-info2 + 1, info2):
+        liste.append((i, i + info1))
 
     return liste

@@ -29,25 +29,34 @@ class Actions:
         return dico_actions
 
     @staticmethod
-    def map_actions(actions, bot: Bot, state: State, states_dict: dict):
+    def map_actions(actions, bot: Bot, etat: State, states_dict: dict, websites_dict:dict, uas_dict: dict,
+                    proxy_dict: dict):
         ua = bot.ua
         proxy = bot.proxy
-        website = states_dict[state][0][0]
-        directory = os.path.dirname(__file__)
+        if len(states_dict[etat][0]) > 0:
+            website = states_dict[etat][0][0]
+        else:
+            website = None
+        state = etat
+
         for action in actions:
             if action == 0:
+                state = uas_dict[bot.ua]
                 ua = states_dict[state][1][0]
                 Useragent.push_back_ua(states_dict, state)
-            else if action == 1:
+            elif action == 1:
+                state = proxy_dict[bot.proxy]
                 proxy = states_dict[state][2][0]
                 Proxy.push_back_proxy(states_dict, state)
-            else if action == 2:
-                Website.push_back_website(states_dict, state)
+            elif action == 2:
+                if website != None:
+                    state = websites_dict[website] #TODO : Changer cette action par un range de visite
+                    Website.push_back_website(states_dict, state)
                 website = states_dict[state][0][0]
-            else if action == 3:
+            elif action == 3:
                 continue
                 
-        return ua, proxy, website
+        return ua, proxy, website, state
 
             
                 

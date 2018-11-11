@@ -5,6 +5,16 @@ from .Proxy import Proxy
 from .State import State
 
 
+def rearrange_website(states: dict, websites_dict: dict, website):
+    state = websites_dict[website]
+    states[state][0].pop(states[state][0].index(website))
+    for etat in states:
+        if etat.block_bots == website.block_bots and etat.fingerprint == website.use_fp:
+            if etat.range_visited_pages[0] <= website.visit_counter <= etat.range_visited_pages[1]:
+                states[etat][0] = [website] + states[etat][0]
+                websites_dict[website] = etat
+                break
+
 class Website:
 
     def __init__(self, uid: uuid, grade:int, has_fp: bool, block_bots: bool, checks_head: bool,
@@ -70,28 +80,28 @@ class Website:
                 score += 10
         if self.checks_head:
                 score += 10
-        if self.check_image_rate:
-            if bot.rate_load_pics < 0.3:
-                score += 20
-            elif 0.3 < bot.rate_load_pics < 0.7:
-                score += 5
+        # if self.check_image_rate:
+        #     if bot.rate_load_pics < 0.3:
+        #         score += 20
+        #     elif 0.3 < bot.rate_load_pics < 0.7:
+        #         score += 5
 
         if self._checks_proxy(bot):
             score += 30
-        if self._checks_ip(bot):
+        if self._checks_proxy(bot):
             score += 50
 
         # if bot.page_visits > self.average_page_visits[1]:
         #     return True, -3
 
         score += self.grade * 10
-        val = self.session_counter * 1
-        if score + val > 180:
-            score = 180
+        val = 0
+        if score + val > 160:
+            score = 160
         else:
              score += val
 
-        return score, compute_blocking(normalize(score, 180))
+        return score, compute_blocking(normalize(score, 160))
 
     def __str__(self):
         return """{ 'id' : %s, 'security_provider' : %d, 'fp' : %r, 'bb' : %r, 'visited' : %d } """ \
@@ -108,8 +118,6 @@ class Website:
 
         #secu_providers_probs = np.ones(len(security_providers), dtype=float) * (prob_sp / (len(security_providers) - 1))
         #secu_providers_probs[0] = 1 - prob_sp
-
-        proxies, _ = Proxy.populate_proxies()
 
         liste_websites = []
         for i in range(n_sites):
@@ -132,28 +140,18 @@ class Website:
     
     @staticmethod
     def sort_in_states(states: list, websites: list):
-        websites_copy = website.copy()
+        websites_copy = websites.copy()
         state_dict = {}
         websites_dict = {}
         for state in states:
-            state_dict[state] = ([], [], []) #Websites, uas, proxies
+            state_dict[state] = [[], [], []] #Websites, uas, proxies
             for website in websites_copy:
                 if website.use_fp  == state.fingerprint and website.block_bots == state.block_bots:
                     state_dict[state][0].append(website)
                     websites_dict[website] = state
                     websites_copy.pop(websites_copy.index(website))
         return state_dict, websites_dict
-    
-    @staticmethod
-    def rearrange_website(states: dict, websites_dict: dict, website):
-        state = websites_dict[website]
-        states[state][0].pop(states[state][0].index(website))
-        for etat in states:
-            if etat.block_bots == website.block_bots and etat.fingerprint == website.use_fb:
-                if  etat.range_visited_pages[0] <=website.visit_counter <= etat.range_visited_pages[1]:
-                    states[etat][0] = [website] + states[etat][0]
-                    website_dict[website] = etat
-                    break
+
 
     @staticmethod
     def push_back_website(states_dict: dict, state: State):

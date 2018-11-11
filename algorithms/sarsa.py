@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(parentdir, "gym-botenv"))
 
 from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
-from .utils.plotting import *
+from algorithms.utils import plotting
 
 env = BotenvEnv(1000)
 

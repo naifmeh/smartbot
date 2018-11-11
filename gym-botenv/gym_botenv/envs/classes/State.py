@@ -37,5 +37,3 @@ class State:
         states = [State(x[0], x[1], x[2], x[4], x[3]) for x in combination]
         return combination, states
 
-    def __len__(self):
-        return 6
