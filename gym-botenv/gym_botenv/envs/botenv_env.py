@@ -1,6 +1,8 @@
 import gym
 import os
-from .classes.Website import read_last_entry as read_line
+from .classes.Website import *
+from .classes.State import *
+from .classes.Proxy import *
 from .classes.Bot import Bot
 
 
@@ -10,10 +12,11 @@ def initiate_bot():
     :return:
     """
     directory = os.path.dirname(__file__)
-    ip = read_line(os.path.join(directory, "data/ips"))
-    ua = read_line(os.path.join(directory, "data/uas"))
 
-    return Bot(ip, ua, (0, 10), False, True, True)
+    proxy = Proxy.populate_proxies()[0]
+    ua = read_last_entry(os.path.join(directory, "data/uas"))
+
+    return Bot(proxy, ua, (0, 10), False, True, True)
 
 
 class BotenvEnv(gym.Env):
@@ -34,8 +37,31 @@ class BotenvEnv(gym.Env):
     """
 
     def __init__(self, num_steps=1000, n_sites=100, nSP=10, prob_sp=1 / 10, prob_fp=1 / 3, prob_bb=1 / 50):
+        self.websites = Website.generate_fake_sites(n_sites, prob_sp, prob_fb, prob_bb, 0.4, 0.4 )
+        self.states_tuple, self.states_obj = States.generate_states((1000, 100), (1000, 100), (1000, 50))
+        self.proxies = Proxy.populate_proxies()
+        self.useragents = Useragent.populate_agents()
+        self.actions = list(range(4))
 
-        pass
+        self.nA = len(self.actions)
+        self.nStates = len(self.states_tuple)
+        self.max_steps = num_steps
+
+        self.bot = initiate_bot()
+
+        self.state = self.states_tuple[0]
+        self.action = (0,)
+        self.observation = self.state
+        self.reward = 0
+        self.website = self.websites[0]
+        self.bot_history = []
+        self.action_history = []
+        self.count_success_crawls = 0
+
+        self.nSteps = 0
+        self.states_dict, self.websites_dict = Website.sort_in_states(self.states_obj, self.websites)
+        self.proxies_dict =  Proxy.sort_in_states(self.states_dict, self.proxies)
+        self.uas_dict = Useragent.sort_in_states(self.states_dict, self.useragents)
 
     def step(self, action):
         """
@@ -46,7 +72,33 @@ class BotenvEnv(gym.Env):
         :param bot:
         :return: tuple containing the next state, the reward of this time step, and a boolean done.
         """
-        pass
+        self.action = (action,)
+        self.reward = 0
+        done = False
+
+        action_result = Actions.map_actions(self.action, self.bot, self.state, self.states_dict)
+        self.bot.ua = action_result[0]
+        self.bot.ua.increment_counter()
+        self.bot.proxy = action_result[1]
+        self.bot.proxy.increment_counter()
+        self.website = action_result[2]
+        if len(self.website) < 2:
+            self.reward = -0.5
+        else:
+            self.reward = self._fake_crawl(self.bot)
+
+        self.website.update_bot_visit(self.bot)
+        self.website.increment_bot_timestep()
+        Website.rearrange_website(self.states_dict, self.websites_dict, self.website)
+        Useragent.rearrange_ua(self.states_dict, self.uas_dict, self.bot.ua)
+        Proxy.rearrange_proxy(self.states_dict, self.proxies_dict, self.bot.proxy)
+
+        self.nSteps += 1
+
+        if self.nSteps == self.max_steps:
+            done = True
+        
+        return self.state, self.reward, done, ''
 
     def _fake_crawl(self,  bot: Bot):
         """
@@ -57,11 +109,39 @@ class BotenvEnv(gym.Env):
         :param bot: the bot
         :return: the reward (0 for not blocked)
         """
-        pass
+
+        def normalize(value: int, maxi: int, mini: int): return ((value)/(180))*(maxi-mini) + mini
+
+        score, shoud_block = self.website.evaluate_bot(bot)
+        if should_block:
+            reward = normalize(value, -1, -5)
+        else:
+            reward = 5
+        
+        return reward
 
 
     def reset(self, n_sites=100, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
-        pass
+        self.websites = Website.generate_fake_sites(n_sites, prob_sp, prob_fb, prob_bb, 0.4, 0.4 )
+        self.proxies = Proxy.populate_proxies()
+        self.useragents = Useragent.populate_agents()
+        self.actions = list(range(4))
+
+
+        self.bot = initiate_bot()
+
+        self.state = self.states_tuple[0]
+        self.action = (0,)
+        self.observation = self.state
+        self.reward = 0
+        self.website = self.websites[0]
+        self.bot_history = []
+        self.count_success_crawls = 0
+
+        self.nSteps = 0
+        self.states_dict, self.websites_dict = Website.sort_in_states(self.states_obj, self.websites)
+        self.proxies_dict =  Proxy.sort_in_states(self.states_dict, self.proxies)
+        self.uas_dict = Useragent.sort_in_states(self.states_dict, self.useragents)
 
     def render(self, mode='all', close=False):
         pass
