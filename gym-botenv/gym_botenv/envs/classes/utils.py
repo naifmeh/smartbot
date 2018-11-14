@@ -47,6 +47,6 @@ def get_tuple_range(info1, info2):
     """
     liste = []
     for i in range(0, info1-info2 + 1, info2):
-        liste.append((i, i + info1))
+        liste.append((i, i + info2))
 
     return liste

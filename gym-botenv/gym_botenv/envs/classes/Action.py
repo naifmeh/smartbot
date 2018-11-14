@@ -29,34 +29,37 @@ class Actions:
         return dico_actions
 
     @staticmethod
-    def map_actions(actions, bot: Bot, etat: State, states_dict: dict, websites_dict:dict, uas_dict: dict,
-                    proxy_dict: dict):
+    def map_actions(actions, bot: Bot, uas: list, ips: list, proxies: list):
         ua = bot.ua
-        proxy = bot.proxy
-        if len(states_dict[etat][0]) > 0:
-            website = states_dict[etat][0][0]
-        else:
-            website = None
-        state = etat
+        proxy = None
+        rate = bot.rate_load_pics
+        ip = bot.ip
 
         for action in actions:
-            if action == 0:
-                state = uas_dict[bot.ua]
-                ua = states_dict[state][1][0]
-                Useragent.push_back_ua(states_dict, state)
-            elif action == 1:
-                state = proxy_dict[bot.proxy]
-                proxy = states_dict[state][2][0]
-                Proxy.push_back_proxy(states_dict, state)
-            elif action == 2:
-                if website != None:
-                    state = websites_dict[website] #TODO : Changer cette action par un range de visite
-                    Website.push_back_website(states_dict, state)
-                website = states_dict[state][0][0]
-            elif action == 3:
+            if action == 0: # Change UA
+                ua = uas[0]
+                Useragent.push_back_ua(uas)
+            elif action == 1: # CHange ip
+                ip = ips[0]
+                tmp = ips[0]
+                ips.pop(0)
+                ips.append(tmp)
+            elif action == 2: # Change proxy
+                proxy = Proxy.pick_new_proxy(proxies)
+            elif action == 3: # Change rate (add)
+                if rate < 1.:
+                    rate += 0.1
+                else:
+                    rate = 1.
+            elif action == 4: # Change rate (diminue)
+                if rate > 0.:
+                    rate -= 0.1
+                else:
+                    rate = 0.
+            elif action == 5: # Do nothing
                 continue
                 
-        return ua, proxy, website, state
+        return ua, proxy, ip, rate
 
             
                 

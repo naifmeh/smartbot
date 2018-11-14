@@ -3,15 +3,7 @@ import os
 from .State import State
 
 
-def rearrange_ua(states_dict: dict, uas_dict: dict, ua):
-    state = uas_dict[ua]
-    states_dict[state][1].pop(states_dict[state][1].index(ua))
 
-    for etat in states_dict:
-        if etat.range_used_ua[0] <= ua.used <= etat.range_used_ua[1]:
-            states_dict[etat][1] = [ua] + states_dict[etat][1]
-            uas_dict[ua] = etat
-            break
 
 class Useragent:
 
@@ -36,22 +28,10 @@ class Useragent:
         return useragents_obj
 
     @staticmethod
-    def sort_in_states(states_dict: dict, uas: list):
-        uas_copy = uas.copy()
-        uas_dict = {}
-        for state in states_dict:
-            for i, ua in enumerate(uas_copy):
-                if state.range_used_ua[0] <= ua.used <= state.range_used_ua[1]:
-                    states_dict[state][1].append(ua)
-                    uas_dict[ua] = state
-                    uas_copy.pop(i)
-        return uas_dict
-
-    @staticmethod
-    def push_back_ua(states_dict: dict, state: State):
-        ua_temp = states_dict[state][1][0]
-        states_dict[state][1].pop(0)
-        states_dict[state][1].append(ua_temp)
+    def push_back_ua(uas_liste: list):
+        ua_temp = uas_liste[0]
+        uas_liste.pop(0)
+        uas_liste.append(ua_temp)
         
 
 

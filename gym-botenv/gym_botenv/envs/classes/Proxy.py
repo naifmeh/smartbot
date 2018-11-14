@@ -3,15 +3,7 @@ import os
 from .State import State
 
 
-def rearrange_proxy(states_dict: dict, proxies_dict: dict, proxy):
-    state = proxies_dict[proxy]
-    states_dict[state][2].pop(states_dict[state][2].index(proxy))
 
-    for etat in states_dict:
-        if etat.range_used_proxy[0] <= proxy.used <= etat.range_used_proxy[1]:
-            states_dict[etat][2] = [proxy] + states_dict[etat][2]
-            proxies_dict[proxy] = etat
-            break
 
 
 def load_proxies(filename: str):
@@ -56,25 +48,8 @@ class Proxy:
         liste_proxies.append(proxy)
 
         return proxy
-    
-    @staticmethod
-    def sort_in_states(states_dict: dict, proxies: list):
-        proxies_copy = proxies.copy()
-        proxy_dict = {}
-        for state in states_dict:
-            for i, proxy in enumerate(proxies_copy):
-                if state.range_used_proxy[0] <= proxy.used <= state.range_used_proxy[1]:
-                    states_dict[state][2].append(proxy)
-                    proxies_copy.pop(i)
-                    proxy_dict[proxy] = state
-        return proxy_dict
 
 
-    @staticmethod
-    def push_back_proxy(states_dict: dict, state: State):
-        proxy_temp = states_dict[state][2][0]
-        states_dict[state][2].pop(0)
-        states_dict[state][2].append(proxy_temp)
 
 
 

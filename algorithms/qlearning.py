@@ -11,7 +11,7 @@ from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
 from algorithms.utils import plotting
 
-env = BotenvEnv(3000)
+env = BotenvEnv(500)
 
 
 def make_epsilon_greedy_policy(Q, epsilon, nA):
@@ -78,7 +78,7 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
 
 
 if __name__ == '__main__':
-    Q, stats, botstats = q_learning(env, 1000)
+    Q, stats, botstats = q_learning(env, 100)
     plotting.plot_episode_stats(stats, title="QLearning")
     plotting.plot_bot_stats(botstats)
 

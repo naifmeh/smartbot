@@ -14,7 +14,8 @@ from algorithms.utils import plotting
 
 env = BotenvEnv(1000)
 
-class PolicyEstimator():
+
+class PolicyEstimator:
 
     def __init__(self, learning_rate=0.01, scope="policy_estimator"):
         with tf.variable_scope(scope):
@@ -50,7 +51,7 @@ class PolicyEstimator():
          return loss
 
 
-class ValueEstimator():
+class ValueEstimator:
     """
     Value Function approximator.
     """
@@ -102,18 +103,17 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
 
     for i_episode in range(num_episodes):
 
-        state = env.reset()
+        env.reset()
+        state = env.state
 
         episode = []
 
-        env.action_history.append({x:0 for x in range(env.nA)})
 
         for t in itertools.count():
 
             action_probs = estimator_policy.predict(states_map[state])
             action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
 
-            env.action_history[i_episode][action] += 1
 
             next_state, reward, done, _ = env.step(action)
             #env.render(mode='blocked')
@@ -151,9 +151,6 @@ def actor_critic(env, estimator_policy, estimator_value, num_episodes, discount_
                 break
 
             state = next_state
-
-    for i, episode in enumerate(env.action_history):
-        print("Episode {} : {}".format(i, episode))
 
     return stats, botstats
 
