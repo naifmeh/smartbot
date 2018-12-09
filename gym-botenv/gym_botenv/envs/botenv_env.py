@@ -19,6 +19,7 @@ def initiate_bot(proxi, usera, ip):
 
     return Bot(usera, ip, 1., proxi)
 
+
 def last_element(liste: list):
     tmp = liste[0]
     liste.pop(0)
@@ -32,7 +33,6 @@ def state_of_website(states: list, website: Website):
             if website.use_fp == state.fingerprint and website.block_bots == state.block_bots and \
             state.has_security_attr == website.security_attribute:
                 return state
-
 
 class BotenvEnv(gym.Env):
     """ Simple bot environment
@@ -51,7 +51,7 @@ class BotenvEnv(gym.Env):
 
     """
 
-    def __init__(self, num_steps=1000, n_sites=50, prob_fp=1 / 3, prob_bb=1 / 50):
+    def __init__(self, num_steps=1000, n_sites=10, prob_fp=1 / 3, prob_bb=1 / 50):
         directory = os.path.dirname(__file__)
 
         self.ips = read_file_as_list(os.path.join(directory, "data/ips"))
@@ -76,7 +76,7 @@ class BotenvEnv(gym.Env):
         self.count_success_crawls = 0
 
         self.nSteps = 0
-        self.states_map = {x:i for i, x in enumerate(self.states_obj)}
+        self.states_map = {x: i for i, x in enumerate(self.states_obj)}
 
     def step(self, action):
         """
@@ -121,11 +121,11 @@ class BotenvEnv(gym.Env):
         return self.state, self.reward, done, ''
 
 
-    def reset(self, n_sites=100, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
+    def reset(self, n_sites=10, nSP=10, prob_sp=1 / 10, prob_fp=1 / 4, prob_bb=1 / 50):
         self.websites = Website.generate_fake_sites(n_sites, prob_fp, prob_bb, 0.4, 0.4)
 
         self.state = self.states_obj[0]
-        self.action = (5,)
+        self.action = (0,)
         self.observation = self.state
         self.reward = 0
         self.website = self.websites[0]

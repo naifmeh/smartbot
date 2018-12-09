@@ -12,7 +12,7 @@ from collections import defaultdict
 from gym_botenv.envs.botenv_env import BotenvEnv
 from algorithms.utils import plotting
 
-env = BotenvEnv(5000)
+env = BotenvEnv(2000)
 
 
 def make_epsilon_greedy_policy(Q, epsilon, nA):
@@ -27,7 +27,7 @@ def make_epsilon_greedy_policy(Q, epsilon, nA):
 
 def sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
     Q = defaultdict(lambda: np.zeros(env.nA))
-
+    print("States: ", env.nStates)
     stats = plotting.EpisodeStats(
         episode_lengths=np.zeros(num_episodes),
         episode_rewards=np.zeros(num_episodes)
@@ -49,7 +49,7 @@ def sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
         action_probs = policy(state)
         action = np.random.choice(np.arange(len(action_probs)), p=action_probs)
 
-        for t in itertools.count():
+        for _ in itertools.count():
 
             next_state, reward, done, _ = env.step(action)
 
@@ -78,6 +78,6 @@ def sarsa(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
 
 
 if __name__ == '__main__':
-    Q, stats, botstats = sarsa(env, 100)
+    Q, stats, botstats = sarsa(env, 250)
     plotting.plot_episode_stats(stats, smoothing_window=10, title="Sarsa")
     plotting.plot_bot_stats(botstats)

@@ -52,7 +52,7 @@ class Website:
         self.visit_counter += 1
 
     def increment_bot_timestep(self):
-        threshold = 75
+        threshold = 150
         self.uas_visited = {x: [i[0], i[1] + 1] for x, i in self.uas_visited.items() if i[1] < self.grade * threshold}
         self.ips_visited = {x: [i[0], i[1] + 1] for x, i in self.ips_visited.items() if i[1] < self.grade * threshold}
 
@@ -93,10 +93,10 @@ class Website:
 
         if self._checks_ua(bot):
             print("UA found")
-            score += 100
+            return 180, True
         if self._checks_proxy(bot):
             print("IP found")
-            score += 100
+            return 180, True
 
         if score > 180:
             score = 180
